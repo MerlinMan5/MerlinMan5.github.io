@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+      <head>
+         
+         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+         <meta charset="utf-8">
+         <!-- GMAIL CLIENT KEY: 462218843122-16riskqb5201tfaeh51nrjqo3bec7h1c.apps.googleusercontent.com -->
+            	<!-- link to main stylesheet -->
+         <link rel="stylesheet" type="text/css" href="main.css">
+      
+         
+
+      </head>
+      
+      
+      <body>
+            <!-- Navigation Bar -->
+         <div class="navbar">
+            <a href="#home">Home</a>
+            <a href="SignIn.html">Sign In</a>
+            <a href="#register">Register</a>
+         </div>
+         
+         <!-- LEFT PANEL -->   
+         <div id="destInt" style="position: absolute">
+            <p id="destTxt"> 
+            Enter your Trip</p>
+         </div>
+
+         <div id="forms" style="position:absolute; top:20; left:0; height:50%; width: 50%">
+            <form>  
+              <div id="mode-selector" class="controls">
+                  <input type="radio" name="type" id="changemode-walking" checked="checked">
+                  <label for="changemode-walking">Walking</label>
+
+                  <input type="radio" name="type" id="changemode-transit">
+                  <label for="changemode-transit">Transit</label>
+
+                  <input type="radio" name="type" id="changemode-driving">
+                  <label for="changemode-driving">Driving</label>
+               </div>
+               
+               <input id="origin-input" class="controls" type="text"
+               placeholder="Enter an origin location"><br>
+            
+               <input id="destination-input" class="controls" type="text"
+               placeholder="Enter a destination">
+
+            </form>
+            <br>
+            <span style="margin-top:25px; margin-left:25px ; font-family:Roboto; color: #500000">Distance: </span> 
+
+            <span id="distance" style="font-family:Roboto; color: #500000"></span>
+         </div>
+         <!-- END OF LEFT PANEL CONTENT -->
+         
+
+         <!--BORDER FOR MAP -->
+         <div class="borderedMap"></div>
+         
+
+         <!-- Map -->
+         <div id="map" style="position:absolute; top:63px; right:2px; height: 330px;  width: 48.25%; margin-right: 12px"></div>
+
+         <!-- LEFT PANEL BORDER & BOTTOM PANEL -->
+         <div class="bordered"></div>
+         <div class="resultBorder"></div>
+
+         
+         <!--MAP SCRIPT (INITIALIZES MAP AND PERFORMS FUNCTIONS) -->
+         <script>
+         function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 30.615, lng: -96.342},
+            zoom: 13
+            });
+
+            new AutocompleteDirectionsHandler(map);
+         }
+
+        /**
+        * @constructor
+       */
+
+
+
+         function AutocompleteDirectionsHandler(map) {
+           this.map = map;
+           this.originPlaceId = null;
+           this.destinationPlaceId = null;
+           this.travelMode = 'WALKING';
+           var originInput = document.getElementById('origin-input');
+           var destinationInput = document.getElementById('destination-input');
+           var modeSelector = document.getElementById('mode-selector');
+           this.directionsService = new google.maps.DirectionsService();
+           this.directionsDisplay = new google.maps.DirectionsRenderer();
+           this.directionsDisplay.setMap(map);
+
+           var originAutocomplete = new google.maps.places.Autocomplete(originInput, {placeIdOnly: true});
+           var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, {placeIdOnly: true});
+
+           this.setupClickListener('changemode-walking', 'WALKING');
+           this.setupClickListener('changemode-transit', 'TRANSIT');
+           this.setupClickListener('changemode-driving', 'DRIVING');
+
+           this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
+           this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
+
+           this.map.push(originInput);
+           this.map.push(destinationInput);
+           this.map.push(modeSelector);
+
+           var geocoder = new google.maps.geocoder;
+           var service = new google.maps.DistanceMatrixService;
+
+            
+         }
+
+         
+         AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) {
+         
+         var radioButton = document.getElementById(id);
+         var me = this;
+         
+         radioButton.addEventListener('click', function() {
+            me.travelMode = mode;
+            me.route();
+            });
+         };
+
+         AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
+            
+            var me = this;
+            autocomplete.addListener('place_changed', function() {
+            var place = autocomplete.getPlace();
+            
+            if (!place.place_id) {
+               window.alert("Please select an option from the dropdown list.");
+               return;
+            }
+          
+            if (mode === 'ORIG') {
+               me.originPlaceId = place.place_id;
+            } 
+            
+            else {
+               me.destinationPlaceId = place.place_id;
+            }
+            
+            me.route();
+            
+            });
+
+         };
+
+      
+
+         AutocompleteDirectionsHandler.prototype.route = function() {
+            
+            if (!this.originPlaceId || !this.destinationPlaceId) {
+               return;
+            }
+        
+            var me = this;
+
+            this.directionsService.route({
+            origin: {'placeId': this.originPlaceId},
+            destination: {'placeId': this.destinationPlaceId},
+            travelMode: this.travelMode}, function(response, status) {
+            
+            if (status === 'OK') {
+               me.directionsDisplay.setDirections(response);
+               document.getElementById("distance").innerHTML ="";
+            var distance= 0;
+            for(i = 0; i < response.routes[0].legs.length; i++){
+               document.getElementById('distance').innerHTML += parseFloat((response.routes[0].legs[i].distance.value * 0.000621371192).toFixed(2)) + " miles";    
+            }
+            } 
+
+            else {
+               window.alert('Directions request failed due to ' + status);
+            }
+            });
+
+
+         };
+
+
+      </script>
+      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30&libraries=places&callback=initMap">
+    </script>
+   <!-- End of Map Script -->      
+       
+      </body>
+
+</html>
