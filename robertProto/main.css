@@ -1,0 +1,137 @@
+body {
+    margin: 60px auto;
+    width: 100%;
+}
+nav ul, footer ul {
+    font-family:'Helvetica', 'Arial', 'Sans-Serif';
+    padding: 0px;
+    list-style: none;
+    font-weight: bold;
+}
+nav ul li, footer ul li {
+    display: inline;
+    margin-right: 20px;
+}
+a {
+    text-decoration: none;
+    color: #999;
+}
+a:hover {
+    text-decoration: underline;
+}
+h1 {
+    font-size: 3em;
+    font-family:'Helvetica', 'Arial', 'Sans-Serif';
+}
+p {
+    font-size: 1.5em;
+    line-height: 1.4em;
+    color: #333;
+}
+footer {
+    border-top: 1px solid #d5d5d5;
+    font-size: .8em;
+}
+
+ul.posts { 
+    margin: 20px auto 40px; 
+    font-size: 1.5em;
+}
+
+ul.posts li {
+    list-style: none;
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: #500000;
+    position: fixed; 
+    top: 0; 
+    width: 100%; 
+}
+
+.about {
+    
+    background-color: #500000;
+    position: fixed; 
+    top: 35;
+    margin-left: 12px; 
+    width: 43%; 
+    height: 50%;
+}
+
+.about a {
+    font-family: Helvetica;
+    color: #FFFFFF;
+    padding-left: 5px;
+}
+
+
+.destInt{
+    background-color: #500000;
+    position: fixed; 
+    top: 30; 
+    height: 32px;
+    width: 43%; 
+    padding: 0 11px 0 13px;
+    margin-left: 12px;
+}
+
+.destInt a {
+    font-family: Roboto;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+
+.navbar a {
+    float: left;
+    display: block;
+    font-family: Verdana;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.controls {
+        margin-top: 45px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #origin-input,
+      #destination-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 200px;
+      }
+
+      #origin-input:focus,
+      #destination-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #mode-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        margin-left: 12px;
+        padding: 5px 11px 0px 11px;
+        width: 50%;
+      }
+
+      #mode-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
