@@ -1,0 +1,8 @@
+i should learn more about github probably
+
+Gmail API Testing:
+1. Make sure you have Python 2.4 or above installed
+2. Go to the project's directory in Terminal
+3. Once in the proper directory input 'python -m SimpleHTTPServer 8000
+4. Enter http://localhost:8000/index.html in your browser and it will run.
+
