@@ -46,6 +46,35 @@
         </button>
         </div>
 
+        <br>
+
+        <!-----Error Messages-->
+        <div id="SignIn">
+            Signing in!
+        </div>
+
+
+        <div id="badEmail">
+            There is a problem with your email, please check again
+        </div>
+
+        <div id="badPass">
+            There is a problem with your password, please make sure it is at least 8 characters long
+        </div>
+
+        <div id="badLogin">
+            Hmm, there was a problem! Try again!
+        </div>
+
+        <script>
+            document.getElementById('SignIn').style.display = "none";
+            document.getElementById('badEmail').style.display = "none";
+            document.getElementById('badPass').style.display = "none";
+            document.getElementById('badLogin').style.display = "none";
+
+        </script>
+
+
     </div>
 
 
@@ -74,6 +103,7 @@
         //Sign in button on click
         btnLogin.addEventListener('click', e => {
 
+
             //Get Email and Password
             var email = txtEmail.value;
 
@@ -84,6 +114,34 @@
 
             //Sign in
             const promise = auth.signInWithEmailAndPassword(email, password);
+
+            if (email.includes("@") && password.length > 7) {
+                document.getElementById('SignIn').style.display = "block";
+
+
+                document.getElementById('badEmail').style.display = "none";
+                document.getElementById('badPass').style.display = "none";
+                document.getElementById('badLogin').style.display = "none";
+
+            } else if (password.length < 8) {
+                document.getElementById('badPass').style.display = "block";
+
+                document.getElementById('badEmail').style.display = "none";
+
+                document.getElementById('badLogin').style.display = "none";
+
+            } else if (!email.includes("@")) {
+                document.getElementById('badEmail').style.display = "block";
+
+
+                document.getElementById('badPass').style.display = "none";
+                document.getElementById('badLogin').style.display = "none";
+            } else {
+                document.getElementById('badLogin').style.display = "block";
+            }
+
+
+
         });
 
 
@@ -106,7 +164,7 @@
             if (firebaseUser) {
                 console.log(firebaseUser)
             } else {
-console.log("not logged in")
+                console.log("not logged in")
             }
         })
 
