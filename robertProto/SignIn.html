@@ -1,198 +1,318 @@
 <!DOCTYPE html>
 <html>
-      <head>
 
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <!-- GMAIL CLIENT KEY: 462218843122-16riskqb5201tfaeh51nrjqo3bec7h1c.apps.googleusercontent.com -->
+<head>
+    <title>Gmail API Quickstart</title>
+    <meta charset='utf-8' />
+
     <!-- link to main stylesheet -->
-    <link rel="stylesheet" type="text/css" href="main.css">
-
+    <link rel="stylesheet" href="main.css">
 
 
 </head>
 
-
 <body>
-    <!-- Navigation Bar -->
+
+    
+    
     <div class="navbar">
-        <a href="#home">Home</a>
-        <a href="SignIn.html">Sign In</a>
+        <a href="index.html">Home</a>
+        <a href="">Sign In</a>
     </div>
+    
 
-    <!-- LEFT PANEL -->
-    <div id="destInt" style="position: absolute">
-        <p id="destTxt">
-            Enter your Trip</p>
-    </div>
-
-    <div id="forms" style="position:absolute; top:20; left:0; height:50%; width: 50%">
-        <form>
-            <div id="mode-selector" class="controls">
-                <input type="radio" name="type" id="changemode-walking" checked="checked">
-                <label for="changemode-walking">Walking</label>
-
-                <input type="radio" name="type" id="changemode-transit">
-                <label for="changemode-transit">Transit</label>
-
-                <input type="radio" name="type" id="changemode-driving">
-                <label for="changemode-driving">Driving</label>
-            </div>
-
-            <input id="origin-input" class="controls" type="text" placeholder="Enter an origin location"><br>
-
-            <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
-
-        </form>
-        <br>
-        <span style="margin-top:25px; margin-left:25px ; font-family:Roboto; color: #500000">Distance: </span>
-
-        <span id="distance" style="font-family:Roboto; color: #500000"></span>
-    </div>
-    <!-- END OF LEFT PANEL CONTENT -->
-
-
-    <!--BORDER FOR MAP -->
-    <div class="borderedMap"></div>
-
-
-    <!-- Map -->
-    <div id="map" style="position:absolute; top:63px; right:2px; height: 330px;  width: 48.25%; margin-right: 12px"></div>
-
-    <!-- LEFT PANEL BORDER & BOTTOM PANEL -->
-    <div class="bordered"></div>
-    <div class="resultBorder"></div>
-
-
-    <!--MAP SCRIPT (INITIALIZES MAP AND PERFORMS FUNCTIONS) -->
     <script>
-        function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: {
-                    lat: 30.615,
-                    lng: -96.342
-                },
-                zoom: 13
-            });
+        //*********************************************
+        // > Firebase API
+        //*********************************************
 
-            new AutocompleteDirectionsHandler(map);
-        }
-
-        /**
-         * @constructor
-         */
+    </script>
 
 
 
-        function AutocompleteDirectionsHandler(map) {
-            this.map = map;
-            this.originPlaceId = null;
-            this.destinationPlaceId = null;
-            this.travelMode = 'WALKING';
-            var originInput = document.getElementById('origin-input');
-            var destinationInput = document.getElementById('destination-input');
-            var modeSelector = document.getElementById('mode-selector');
-            this.directionsService = new google.maps.DirectionsService();
-            this.directionsDisplay = new google.maps.DirectionsRenderer();
-            this.directionsDisplay.setMap(map);
+    <div class="container">
 
-            var originAutocomplete = new google.maps.places.Autocomplete(originInput, {
-                placeIdOnly: true
-            });
-            var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, {
-                placeIdOnly: true
-            });
+        <div align="center">
+            <input id="txtEmail" class="controls" type="text" placeholder="Username:">
 
-            this.setupClickListener('changemode-walking', 'WALKING');
-            this.setupClickListener('changemode-transit', 'TRANSIT');
-            this.setupClickListener('changemode-driving', 'DRIVING');
-
-            this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
-            this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
-
-            this.map.push(originInput);
-            this.map.push(destinationInput);
-            this.map.push(modeSelector);
-
-            var geocoder = new google.maps.geocoder;
-            var service = new google.maps.DistanceMatrixService;
+            <br>
 
 
-        }
+            <input id="txtPassword" class="controls" type="password" placeholder="Password:">
+            <br> <br>
 
 
-        AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) {
 
-            var radioButton = document.getElementById(id);
-            var me = this;
+            <button id="btnLogin" class="btn btn-action">
+        
+        Log in
+        </button>
 
-            radioButton.addEventListener('click', function() {
-                me.travelMode = mode;
-                me.route();
-            });
+            <button id="btnSignUp" class="btn btn-secondary">
+        Sign Up
+        </button>
+        </div>
+
+        <br>
+
+        <!-----Error Messages-->
+        <div id="SignIn" align="center">
+            Signing in!
+        </div>
+
+
+        <div id="badEmail">
+            There is a problem with your email, please check again
+        </div>
+
+        <div id="badPass">
+            There is a problem with your password, please make sure it is at least 8 characters long
+        </div>
+
+        <div id="badLogin">
+            Hmm, there was a problem! Try again!
+        </div>
+
+        <script>
+            document.getElementById('SignIn').style.display = "none";
+            document.getElementById('badEmail').style.display = "none";
+            document.getElementById('badPass').style.display = "none";
+            document.getElementById('badLogin').style.display = "none";
+
+        </script>
+
+
+    </div>
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBM99Jufcz4syqiCaROfyiDJAS063DIIwg",
+            authDomain: "project-6fe7a.firebaseapp.com",
+            databaseURL: "https://project-6fe7a.firebaseio.com",
+            projectId: "project-6fe7a",
+            storageBucket: "",
+            messagingSenderId: "34921693342"
         };
-
-        AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
-
-            var me = this;
-            autocomplete.addListener('place_changed', function() {
-                var place = autocomplete.getPlace();
-
-                if (!place.place_id) {
-                    window.alert("Please select an option from the dropdown list.");
-                    return;
-                }
-
-                if (mode === 'ORIG') {
-                    me.originPlaceId = place.place_id;
-                } else {
-                    me.destinationPlaceId = place.place_id;
-                }
-
-                me.route();
-
-            });
-
-        };
+        firebase.initializeApp(config);
 
 
+        //Get Elems
+        const txtEmail = document.getElementById('txtEmail');
+        const txtPassword = document.getElementById('txtPassword');
+        const btnLogin = document.getElementById('btnLogin');
+        const btnSignUp = document.getElementById('btnSignUp');
 
-        AutocompleteDirectionsHandler.prototype.route = function() {
 
-            if (!this.originPlaceId || !this.destinationPlaceId) {
-                return;
+        //Sign in button on click
+        btnLogin.addEventListener('click', e => {
+
+
+            //Get Email and Password
+            var email = txtEmail.value;
+
+            //console.log(email)
+
+            var password = txtPassword.value;
+            var auth = firebase.auth();
+
+            //Sign in
+            const promise = auth.signInWithEmailAndPassword(email, password);
+
+            if (email.includes("@") && password.length > 7) {
+                document.getElementById('SignIn').style.display = "block";
+                document.getElementById('badEmail').style.display = "none";
+                document.getElementById('badPass').style.display = "none";
+                document.getElementById('badLogin').style.display = "none";
+
+
+                window.location.href = "index.html";
+
+
+
+            } else if (password.length < 8) {
+                document.getElementById('badPass').style.display = "block";
+
+                document.getElementById('badEmail').style.display = "none";
+
+                document.getElementById('badLogin').style.display = "none";
+
+            } else if (!email.includes("@")) {
+                document.getElementById('badEmail').style.display = "block";
+
+
+                document.getElementById('badPass').style.display = "none";
+                document.getElementById('badLogin').style.display = "none";
+            } else {
+                document.getElementById('badLogin').style.display = "block";
             }
 
-            var me = this;
 
-            this.directionsService.route({
-                origin: {
-                    'placeId': this.originPlaceId
-                },
-                destination: {
-                    'placeId': this.destinationPlaceId
-                },
-                travelMode: this.travelMode
-            }, function(response, status) {
 
-                if (status === 'OK') {
-                    me.directionsDisplay.setDirections(response);
-                    document.getElementById("distance").innerHTML = "";
-                    var distance = 0;
-                    for (i = 0; i < response.routes[0].legs.length; i++) {
-                        document.getElementById('distance').innerHTML += parseFloat((response.routes[0].legs[i].distance.value * 0.000621371192).toFixed(2)) + " miles";
+        });
+
+
+        //Sign up button on click
+        btnSignUp.addEventListener("click", e => {
+
+            //Get Email and Password
+            var email = txtEmail.value;
+
+            //console.log(email)
+
+            var password = txtPassword.value;
+            var auth = firebase.auth();
+
+            //Sign in
+            const promise = auth.createUserWithEmailAndPassword(email, password);
+        });
+
+        firebase.auth().onAuthStateChanged(firebaseUser => {
+            if (firebaseUser) {
+                console.log(firebaseUser)
+            } else {
+                console.log("not logged in")
+            }
+        })
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <script>
+        //*********************************************
+        // > Gmail API
+        //*********************************************
+
+    </script>
+
+
+    <button id="authorize-button" style="display: none;">Authorize</button>
+    <button id="signout-button" style="display: none;">Sign Out</button>
+
+    <pre id="content"></pre>
+
+
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBM99Jufcz4syqiCaROfyiDJAS063DIIwg",
+            authDomain: "project-6fe7a.firebaseapp.com",
+            databaseURL: "https://project-6fe7a.firebaseio.com",
+            projectId: "project-6fe7a",
+            storageBucket: "",
+            messagingSenderId: "34921693342"
+        };
+        firebase.initializeApp(config);
+
+    </script>
+
+    <script type="text/javascript">
+        // Client ID 
+        var CLIENT_ID = '462218843122-16riskqb5201tfaeh51nrjqo3bec7h1c.apps.googleusercontent.com';
+
+
+        var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
+
+        var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
+
+        var authorizeButton = document.getElementById('authorize-button');
+        var signoutButton = document.getElementById('signout-button');
+
+
+        function handleClientLoad() {
+            gapi.load('client:auth2', initClient);
+        }
+
+
+        function initClient() {
+            gapi.client.init({
+                discoveryDocs: DISCOVERY_DOCS,
+                clientId: CLIENT_ID,
+                scope: SCOPES
+            }).then(function() {
+
+                gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+
+                updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+                authorizeButton.onclick = handleAuthClick;
+                signoutButton.onclick = handleSignoutClick;
+            });
+        }
+
+
+        function updateSigninStatus(isSignedIn) {
+            if (isSignedIn) {
+                authorizeButton.style.display = 'none';
+                signoutButton.style.display = 'block';
+                listLabels();
+            } else {
+                authorizeButton.style.display = 'block';
+                signoutButton.style.display = 'none';
+            }
+        }
+
+
+        function handleAuthClick(event) {
+            gapi.auth2.getAuthInstance().signIn();
+        }
+
+
+        function handleSignoutClick(event) {
+            gapi.auth2.getAuthInstance().signOut();
+        }
+
+        function appendPre(message) {
+            var pre = document.getElementById('content');
+            var textContent = document.createTextNode(message + '\n');
+            pre.appendChild(textContent);
+        }
+
+
+        function listLabels() {
+            gapi.client.gmail.users.labels.list({
+                'userId': 'me'
+            }).then(function(response) {
+                var labels = response.result.labels;
+                appendPre('Labels:');
+
+                if (labels && labels.length > 0) {
+                    for (i = 0; i < labels.length; i++) {
+                        var label = labels[i];
+                        appendPre(label.name)
                     }
                 } else {
-                    window.alert('Directions request failed due to ' + status);
+                    appendPre('No Labels found.');
                 }
             });
+        }
+
+    </script>
+
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
 
 
-        };
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30&libraries=places&callback=initMap">
-    </script>
-    <!-- End of Map Script -->
+
+
+
+
+
+
+
+
 
 </body>
 
