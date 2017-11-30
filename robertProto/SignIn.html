@@ -15,11 +15,10 @@
 
 
     <script>
-        
         //*********************************************
         // > Firebase API
         //*********************************************
-    
+
     </script>
 
 
@@ -64,32 +63,53 @@
         };
         firebase.initializeApp(config);
 
-        
+
         //Get Elems
         const txtEmail = document.getElementById('txtEmail');
         const txtPassword = document.getElementById('txtPassword');
         const btnLogin = document.getElementById('btnLogin');
         const btnSignUp = document.getElementById('btnSignUp');
-        
+
+
         //Sign in button on click
-        btnLogin.addEventListener('click', e=>{
-           
+        btnLogin.addEventListener('click', e => {
+
             //Get Email and Password
             var email = txtEmail.value;
-            
-              //console.log(email)
-            
+
+            //console.log(email)
+
             var password = txtPassword.value;
             var auth = firebase.auth();
-            
-            
+
             //Sign in
             const promise = auth.signInWithEmailAndPassword(email, password);
-            
-            
-            console.log("Yuuuh!")
         });
-        
+
+
+        //Sign up button on click
+        btnSignU.addEventListener("click", e => {
+
+            //Get Email and Password
+            var email = txtEmail.value;
+
+            //console.log(email)
+
+            var password = txtPassword.value;
+            var auth = firebase.auth();
+
+            //Sign in
+            const promise = auth.createUserWithEmailAndPassword(email, password);
+        });
+
+        firebase.auth().onAuthStateChange(firebaseUser => {
+            if (firebaseUser) {
+                console.log(firebaseUser)
+            } else {
+console.log("not logged in")
+            }
+        })
+
     </script>
 
 
@@ -105,6 +125,7 @@
         //*********************************************
         // > Gmail API
         //*********************************************
+
     </script>
 
 
@@ -126,6 +147,7 @@
             messagingSenderId: "34921693342"
         };
         firebase.initializeApp(config);
+
     </script>
 
     <script type="text/javascript">
@@ -208,9 +230,12 @@
                 }
             });
         }
+
     </script>
 
     <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
+
+
     </script>
 
 
