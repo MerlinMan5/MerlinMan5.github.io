@@ -102,7 +102,7 @@
             const promise = auth.createUserWithEmailAndPassword(email, password);
         });
 
-        firebase.auth().onAuthStateChange(firebaseUser => {
+        firebase.auth().onAuthStateChanged(firebaseUser => {
             if (firebaseUser) {
                 console.log(firebaseUser)
             } else {
