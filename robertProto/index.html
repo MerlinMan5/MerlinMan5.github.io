@@ -222,6 +222,7 @@ function getEstimatesForUserLocation(latitude,longitude) {
     	Authorization: "Token " + uberServerToken
     },
     data: { 
+	  server_token = uberServerToken,
       start_latitude: latitude,
       start_longitude: longitude,
       end_latitude: partyLatitude,
