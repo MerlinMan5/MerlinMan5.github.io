@@ -1,260 +1,267 @@
 <!DOCTYPE html>
 <html>
-      <head>
-         
-         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-         <meta charset="utf-8">
-         <!-- GMAIL CLIENT KEY: 462218843122-16riskqb5201tfaeh51nrjqo3bec7h1c.apps.googleusercontent.com -->
-            	<!-- link to main stylesheet -->
-         <link rel="stylesheet" type="text/css" href="main.css">
-      
-         
 
-      </head>
-      
-      
-      <body>
-            <!-- Navigation Bar -->
-         <div class="navbar">
-            <a href="#home">Home</a>
-            <a href="SignIn.html">Sign In</a>
-            <a href="#register">Register</a>
+<head>
+
+   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+   <meta charset="utf-8">
+   <!-- GMAIL CLIENT KEY: 462218843122-16riskqb5201tfaeh51nrjqo3bec7h1c.apps.googleusercontent.com -->
+   <!-- link to main stylesheet -->
+   <link rel="stylesheet" type="text/css" href="main.css">
+
+
+
+</head>
+
+
+<body>
+   <!-- Navigation Bar -->
+   <div class="navbar">
+      <a href="#home">Home</a>
+      <a href="SignIn.html">Sign In</a>
+      <a href="#register">Register</a>
+   </div>
+
+   <!-- LEFT PANEL -->
+   <div id="destInt" style="position: absolute">
+      <p id="destTxt">
+         Enter your Trip</p>
+   </div>
+
+   <div id="forms" style="position:absolute; top:20; left:0; height:50%; width: 50%">
+      <form>
+         <div id="mode-selector" class="controls">
+            <input type="radio" name="type" id="changemode-walking" checked="checked">
+            <label for="changemode-walking">Walking</label>
+
+            <input type="radio" name="type" id="changemode-transit">
+            <label for="changemode-transit">Transit</label>
+
+            <input type="radio" name="type" id="changemode-driving">
+            <label for="changemode-driving">Driving</label>
          </div>
-         
-         <!-- LEFT PANEL -->   
-         <div id="destInt" style="position: absolute">
-            <p id="destTxt"> 
-            Enter your Trip</p>
-         </div>
 
-         <div id="forms" style="position:absolute; top:20; left:0; height:50%; width: 50%">
-            <form>  
-              <div id="mode-selector" class="controls">
-                  <input type="radio" name="type" id="changemode-walking" checked="checked">
-                  <label for="changemode-walking">Walking</label>
+         <input id="origin-input" class="controls" type="text" placeholder="Enter an origin location"><br>
 
-                  <input type="radio" name="type" id="changemode-transit">
-                  <label for="changemode-transit">Transit</label>
+         <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
 
-                  <input type="radio" name="type" id="changemode-driving">
-                  <label for="changemode-driving">Driving</label>
-               </div>
-               
-               <input id="origin-input" class="controls" type="text"
-               placeholder="Enter an origin location"><br>
-            
-               <input id="destination-input" class="controls" type="text"
-               placeholder="Enter a destination">
+      </form>
+      <br>
+      <span style="margin-top:25px; margin-left:25px ; font-family:Roboto; color: #500000">Distance: </span>
 
-            </form>
-            <br>
-            <span style="margin-top:25px; margin-left:25px ; font-family:Roboto; color: #500000">Distance: </span> 
+      <span id="distance" style="font-family:Roboto; color: #500000"></span>
+   </div>
+   <!-- END OF LEFT PANEL CONTENT -->
 
-            <span id="distance" style="font-family:Roboto; color: #500000"></span>
-         </div>
-         <!-- END OF LEFT PANEL CONTENT -->
-         
 
-         <!--BORDER FOR MAP -->
-         <div class="borderedMap"></div>
-         
+   <!--BORDER FOR MAP -->
+   <div class="borderedMap"></div>
 
-         <!-- Map -->
-         <div id="map" style="position:absolute; top:63px; right:2px; height: 330px;  width: 48.25%; margin-right: 12px"></div>
 
-         <!-- LEFT PANEL BORDER & BOTTOM PANEL -->
-         <div class="bordered"></div>
-         <div class="resultBorder"></div>
+   <!-- Map -->
+   <div id="map" style="position:absolute; top:63px; right:2px; height: 330px;  width: 48.25%; margin-right: 12px"></div>
 
-         
-         <!--MAP SCRIPT (INITIALIZES MAP AND PERFORMS FUNCTIONS) -->
-         <script>
-         function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 30.615, lng: -96.342},
+   <!-- LEFT PANEL BORDER & BOTTOM PANEL -->
+   <div class="bordered"></div>
+   <div class="resultBorder"></div>
+
+
+   <!--MAP SCRIPT (INITIALIZES MAP AND PERFORMS FUNCTIONS) -->
+   <script>
+      function initMap() {
+         var map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+               lat: 30.615,
+               lng: -96.342
+            },
             zoom: 13
-            });
+         });
 
-            new AutocompleteDirectionsHandler(map);
-         }
+         new AutocompleteDirectionsHandler(map);
+      }
 
-        /**
-        * @constructor
+      /**
+       * @constructor
        */
 
 
 
-         function AutocompleteDirectionsHandler(map) {
-           this.map = map;
-           this.originPlaceId = null;
-           this.destinationPlaceId = null;
-           this.travelMode = 'WALKING';
-           var originInput = document.getElementById('origin-input');
-           var destinationInput = document.getElementById('destination-input');
-           var modeSelector = document.getElementById('mode-selector');
-           this.directionsService = new google.maps.DirectionsService();
-           this.directionsDisplay = new google.maps.DirectionsRenderer();
-           this.directionsDisplay.setMap(map);
+      function AutocompleteDirectionsHandler(map) {
+         this.map = map;
+         this.originPlaceId = null;
+         this.destinationPlaceId = null;
+         this.travelMode = 'WALKING';
+         var originInput = document.getElementById('origin-input');
+         var destinationInput = document.getElementById('destination-input');
+         var modeSelector = document.getElementById('mode-selector');
+         this.directionsService = new google.maps.DirectionsService();
+         this.directionsDisplay = new google.maps.DirectionsRenderer();
+         this.directionsDisplay.setMap(map);
 
-           var originAutocomplete = new google.maps.places.Autocomplete(originInput, {placeIdOnly: true});
-           var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, {placeIdOnly: true});
+         var originAutocomplete = new google.maps.places.Autocomplete(originInput, {
+            placeIdOnly: true
+         });
+         var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, {
+            placeIdOnly: true
+         });
 
-           this.setupClickListener('changemode-walking', 'WALKING');
-           this.setupClickListener('changemode-transit', 'TRANSIT');
-           this.setupClickListener('changemode-driving', 'DRIVING');
+         this.setupClickListener('changemode-walking', 'WALKING');
+         this.setupClickListener('changemode-transit', 'TRANSIT');
+         this.setupClickListener('changemode-driving', 'DRIVING');
 
-           this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
-           this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
+         this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
+         this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
 
-           this.map.push(originInput);
-           this.map.push(destinationInput);
-           this.map.push(modeSelector);
+         this.map.push(originInput);
+         this.map.push(destinationInput);
+         this.map.push(modeSelector);
 
-           var geocoder = new google.maps.geocoder;
-           var service = new google.maps.DistanceMatrixService;
+         var geocoder = new google.maps.geocoder;
+         var service = new google.maps.DistanceMatrixService;
 
-            
-         }
 
-         
-         AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) {
-         
+      }
+
+
+      AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) {
+
          var radioButton = document.getElementById(id);
          var me = this;
-         
+
          radioButton.addEventListener('click', function() {
             me.travelMode = mode;
             me.route();
-            });
-         };
+         });
+      };
 
-         AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
-            
-            var me = this;
-            autocomplete.addListener('place_changed', function() {
+      AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
+
+         var me = this;
+         autocomplete.addListener('place_changed', function() {
             var place = autocomplete.getPlace();
-            
+
             if (!place.place_id) {
                window.alert("Please select an option from the dropdown list.");
                return;
             }
-          
+
             if (mode === 'ORIG') {
                me.originPlaceId = place.place_id;
-            } 
-            
-            else {
+            } else {
                me.destinationPlaceId = place.place_id;
             }
-            
+
             me.route();
-            
-            });
 
-         };
+         });
 
-      
+      };
 
-         AutocompleteDirectionsHandler.prototype.route = function() {
-            
-            if (!this.originPlaceId || !this.destinationPlaceId) {
-               return;
-            }
-        
-            var me = this;
 
-            this.directionsService.route({
-            origin: {'placeId': this.originPlaceId},
-            destination: {'placeId': this.destinationPlaceId},
-            travelMode: this.travelMode}, function(response, status) {
-            
+
+      AutocompleteDirectionsHandler.prototype.route = function() {
+
+         if (!this.originPlaceId || !this.destinationPlaceId) {
+            return;
+         }
+
+         var me = this;
+
+         this.directionsService.route({
+            origin: {
+               'placeId': this.originPlaceId
+            },
+            destination: {
+               'placeId': this.destinationPlaceId
+            },
+            travelMode: this.travelMode
+         }, function(response, status) {
+
             if (status === 'OK') {
                me.directionsDisplay.setDirections(response);
-               document.getElementById("distance").innerHTML ="";
-            var distance= 0;
-            for(i = 0; i < response.routes[0].legs.length; i++){
-               document.getElementById('distance').innerHTML += parseFloat((response.routes[0].legs[i].distance.value * 0.000621371192).toFixed(2)) + " miles";    
-            }
-            } 
-
-            else {
+               document.getElementById("distance").innerHTML = "";
+               var distance = 0;
+               for (i = 0; i < response.routes[0].legs.length; i++) {
+                  document.getElementById('distance').innerHTML += parseFloat((response.routes[0].legs[i].distance.value * 0.000621371192).toFixed(2)) + " miles";
+               }
+            } else {
                window.alert('Directions request failed due to ' + status);
             }
-            });
+         });
 
 
-         };
+      };
+
+   </script>
+   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30&libraries=places&callback=initMap">
 
 
-      </script>
-      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30&libraries=places&callback=initMap">
-    </script>
-   <!-- End of Map Script -->     
+   </script>
+   <!-- End of Map Script -->
 
-  <!-- Start of uber polling -->
-  
-  		  <script src="js/jquery-3.2.1.min.js"></script> 
-		
-		
-			
-		<script>
-		
-// Uber API Constants
-var uberClientId = "CE9VR9YEShlkoCZj3cIDaKVPd7ZZqTzB"
-	, uberServerToken = "UNXTVx3vRMjS6BwE-K_OQFsBKPNMoewN1shnewaW"
-	, uberSecretClientId = "3GP-8OtisG8GSHIKbC49ogYkdEyKXe3zVl0afEXp";
+   <!-- Start of uber polling -->
 
-// static vars for estimates. Need to implement dyanamic geo coding from gmaps once uber api works with static
-var userLatitude
-	, userLongitude
-  , partyLatitude = 30.618531
-  , partyLongitude = -96.3386877;
+   <script src="js/jquery-3.2.1.min.js"></script>
 
-navigator.geolocation.watchPosition(function(position) {
-	// Update latitude and longitude by asking user for their geo location
-	userLatitude = position.coords.latitude;
-	userLongitude = position.coords.longitude;
 
-  // Query Uber API if needed
-	getEstimatesForUserLocation(userLatitude, userLongitude);
-});
 
-function getEstimatesForUserLocation(latitude,longitude) {
+   <script>
+      // Uber API Constants
+      var uberClientId = "CE9VR9YEShlkoCZj3cIDaKVPd7ZZqTzB",
+         uberServerToken = "UNXTVx3vRMjS6BwE-K_OQFsBKPNMoewN1shnewaW",
+         uberSecretClientId = "3GP-8OtisG8GSHIKbC49ogYkdEyKXe3zVl0afEXp";
 
-	console.log("Getting time estimate...");
-  
-  	var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
-	
-	$.getJSON(url, function(result){
-    console.log(result);
-	
-	  // 'results' is an object with a key containing an Array
-      var data = result["prices"]; 
-      if (typeof data != typeof undefined) {
-        // Sort Uber products by time to the user's location 
-        data.sort(function(t0, t1) {
-		
-			console.log("shortest price: " + t0.duration - t1.duration);
-          return t0.duration - t1.duration;
-        });
+      // static vars for estimates. Need to implement dyanamic geo coding from gmaps once uber api works with static
+      var userLatitude, userLongitude, partyLatitude = 30.618531,
+         partyLongitude = -96.3386877;
 
-        // Update the Uber button with the shortest time
-        var shortest = data[0];
-        if (typeof shortest != typeof undefined) {
-          console.log("Updating time estimate...");
-          $("#time").html("IN " + Math.ceil(shortest.duration / 60.0) + " MIN");
-		  console.log("IN " + Math.ceil(shortest.duration / 60.0) + " MIN");
-        }
+      navigator.geolocation.watchPosition(function(position) {
+         // Update latitude and longitude by asking user for their geo location
+         userLatitude = position.coords.latitude;
+         userLongitude = position.coords.longitude;
+
+      });
+
+      //get estimates based off of static input
+      //location of device is start, location of a&m is end
+      function getEstimatesForUserLocation(latitude, longitude) {
+
+         console.log("Getting time estimate...");
+
+         var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
+         var lyftUrl = 'https://api.lyft.com/v1/cost?start_latitude=' + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
+         $.getJSON(url, function(result) {
+            console.log(result);
+
+         });
+
       }
-    });
 
-}		
-		</script>
-		
-		
-		
 
-       
-      </body>
+      //returns coordinates from the text boxes
+      function getCoordinates(address) {
+
+         console.log("Getting geo coordinates");
+         var urlAddress = address.split(' ').join('+');
+
+         var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
+
+         $.getJSON(url, function(result) {
+            console.log(result);
+
+         });
+
+      }
+
+   </script>
+
+
+   <input id="UberCheck" type="button" value="UberCheck" onclick="getEstimatesForUserLocation(42.618531, -96.3386277);" />
+   <input id="GeoCode1" type="button" value="GeoCode1" onclick="getCoordinates(document.getElementById('origin-input').value);" />
+   <input id="GeoCode2" type="button" value="GeoCode2" onclick="getCoordinates(document.getElementById('destination-input').value);" />
+
+
+
+</body>
 
 </html>
