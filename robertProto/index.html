@@ -206,10 +206,12 @@
 
    <script src="js/jquery-3.2.1.min.js"></script>
 
-   <input id="UberCheck" type="button" value="UberCheck" onclick="getEstimatesForUserLocation();"><br>
+   <input id="Get Estimates" type="button" value="Get Estimates" onclick="getCoordsBeforePricing();" />
 
-   <label for="">Uber1: </label><input type="textbox" id="Uber1" name="Uber1"></input><br>
+   <br> <label for="">Uber1: </label><input type="textbox" id="Uber1" name="Uber1"></input><br>
    <label for="">Uber2: </label><input type="textbox" id="Uber2" name="Uber2"></input><br>
+   <label for="">Lyft1: </label><input type="textbox" id="Lyft1" name="Lyft1"></input><br>
+   <label for="">Lyft2: </label><input type="textbox" id="Lyft2" name="Lyft2"></input><br>
 
    <script>
       // Uber API Constants
@@ -221,53 +223,22 @@
       var userLatitude, userLongitude, partyLatitude,
          partyLongitude;
 
-      //no longner need user position, we will get coordinates from text boxes
-      /*
-      navigator.geolocation.watchPosition(function(position) {
-         // Update latitude and longitude by asking user for their geo location
-         userLatitude = position.coords.latitude;
-         userLongitude = position.coords.longitude;
+      //use callbacks to allow proper ordering of functions.
+      function getCoordsBeforePricing() {
 
-      });*/
-
-      //get estimates based off of static input
-      //location of device is start, location of a&m is end
-      function getEstimatesForUserLocation() {
-         console.log("Getting geo coordinates");
-
-         //call for function to get new coordinate for start and end
+         //set start coords and end coords
+         //we call get end coordinates in start coordinates
+         //we call getPrices() in get end coordinates
          getStartCoordinates(document.getElementById('origin-input').value);
-         getEndCoordinates(document.getElementById('destination-input').value);
 
-         console.log(userLatitude);
-         console.log(userLongitude);
-         console.log(partyLatitude);
-         console.log(partyLongitude);
-
-
-         console.log("Getting time estimate...");
-
-
-         var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
-
-         $.getJSON(url, function(result) {
-            console.log(result);
-
-            //print out uber options
-            for (i = 0; i < result["prices"].length; i++) {
-               console.log(result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"]);
-
-               if (i == 0) {
-                  document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
-               } else if (i == 1) {
-                  document.getElementById('Uber2').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
-               }
-            }
-
-         });
 
       }
 
+      //create callback to allow for uber and lyft to get coords when called in getEndCoordinates()
+      function getPrices() {
+         getUberPrices();
+         getLyftPrices();
+      }
 
       //returns coordinates from the text boxes
       function getStartCoordinates(address) {
@@ -278,7 +249,7 @@
          var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
          $.getJSON(url, function(result) {
-            console.log(result);
+            //console.log(result);
 
             var getResults = result;
 
@@ -287,6 +258,10 @@
 
             userLatitude = showLat;
             userLongitude = showLng;
+
+            //call for end coordinates so we can keep order
+            getEndCoordinates(document.getElementById('destination-input').value);
+
 
          });
 
@@ -301,7 +276,7 @@
          var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
          $.getJSON(url, function(result) {
-            console.log(result);
+            //console.log(result);
 
             var getResults = result;
 
@@ -311,8 +286,129 @@
             partyLatitude = showLat;
             partyLongitude = showLng;
 
+            //call for uber/lyft estimates AFTER we get new coordinates for start AND end
+            getPrices();
+
          });
 
+      }
+
+
+
+      //get prices for uber based off of text input
+      function getUberPrices() {
+         console.log("Getting time estimate...");
+
+         //call for function to get new coordinate for start and end
+         //getStartCoordinates(document.getElementById('origin-input').value);
+         //getEndCoordinates(document.getElementById('destination-input').value);
+
+         console.log("Uber Start Lat: " + userLatitude);
+         console.log("Uber Stat Lng: " + userLongitude);
+         console.log("Uber End Lat: " + partyLatitude);
+         console.log("Uber End Lng: " + partyLongitude);
+
+
+         var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
+
+         var lyftUrl = 'https://api.lyft.com/v1/cost?start_latitude=' + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
+
+         $.getJSON(url, function(result) {
+            console.log(result);
+
+            //print uber prices to textbox
+            for (i = 0; i < result["prices"].length; i++) {
+               console.log(result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"]);
+
+               if (i == 0) {
+                  document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+               } else if (i == 1) {
+                  document.getElementById('Uber2').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+               }
+            }
+
+         });
+      }
+
+      function getLyftPrices() {
+
+         //client info from temp lyft API
+         var clientId = '4T6LiXnr2Jfk';
+         var clientSecret = '8GY2GiXmuu9vGm3YGlRCiff8KUIzr83Q';
+
+         var lyftToken;
+
+
+         //call for function to get new coordinate for start and end
+         //getStartCoordinates(document.getElementById('origin-input').value);
+         //getEndCoordinates(document.getElementById('destination-input').value);
+
+         //get authentication access token from lyft 
+         $.ajax({
+            url: 'https://api.lyft.com/oauth/token',
+            type: 'POST',
+            data: {
+               grant_type: 'client_credentials',
+               scope: 'public'
+            },
+
+            beforeSend: function(xhr) {
+               xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":" + clientSecret));
+            },
+            success: function(response) {
+               //console.log(response);
+
+               lyftToken = response["access_token"];
+               executeLyftAjax(lyftToken, userLatitude, userLongitude, partyLatitude, partyLongitude);
+
+            },
+            error: function(error) {
+               console.log(error);
+            }
+         });
+      }
+
+      function executeLyftAjax(token, startLat, startLng, endLat, endLng) {
+
+         console.log("Lyft Start Lat: " + userLatitude);
+         console.log("Lyft Stat Lng: " + userLongitude);
+         console.log("Lyft End Lat: " + partyLatitude);
+         console.log("Lyft End Lng: " + partyLongitude);
+
+         $.ajax({
+            url: 'https://api.lyft.com/v1/cost',
+            type: 'GET',
+
+            data: {
+               start_lat: startLat,
+               start_lng: startLng,
+               end_lat: endLat,
+               end_lng: endLng
+            },
+
+            beforeSend: function(xhr) {
+               console.log(token)
+               xhr.setRequestHeader("Authorization", "Bearer " + String(token));
+            },
+            success: function(response) {
+               console.log(response);
+
+               //print lyft prices to the textbox
+               for (i = 0; i < response["cost_estimates"].length; i++) {
+                  console.log(response["cost_estimates"][i]["display_name"] + ", $" + response["cost_estimates"][i]["estimated_cost_cents_min"] + "-$" + response["cost_estimates"][i]["estimated_cost_cents_max"]);
+
+                  if (i == 0) {
+                     document.getElementById('Lyft1').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
+                  } else if (i == 1) {
+                     document.getElementById('Lyft2').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
+                  }
+               }
+
+            },
+            error: function(error) {
+               console.log(error);
+            }
+         });
       }
 
    </script>
