@@ -244,20 +244,19 @@
       function getStartCoordinates(address) {
 
          console.log("Getting start geo coordinates");
+
+         //replace spaces with '+'. needed for url builder below
          var urlAddress = address.split(' ').join('+');
 
+         //build url from api site, address, and key
          var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
          $.getJSON(url, function(result) {
-            //console.log(result);
 
-            var getResults = result;
+            //grab lat/longitude
+            userLatitude = result["results"][0]["geometry"]["location"]["lat"];
+            userLongitude = result["results"][0]["geometry"]["location"]["lng"];
 
-            var showLat = getResults["results"][0]["geometry"]["location"]["lat"];
-            var showLng = getResults["results"][0]["geometry"]["location"]["lng"];
-
-            userLatitude = showLat;
-            userLongitude = showLng;
 
             //call for end coordinates so we can keep order
             getEndCoordinates(document.getElementById('destination-input').value);
@@ -270,21 +269,21 @@
       //returns coordinates from the text boxes
       function getEndCoordinates(address) {
 
+
          console.log("Getting end geo coordinates");
+
+         //replace spaces with '+' in address
          var urlAddress = address.split(' ').join('+');
 
+         //set url for getJSON
          var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
          $.getJSON(url, function(result) {
-            //console.log(result);
 
-            var getResults = result;
+            //grab lat/lont for end destination
+            partyLatitude = result["results"][0]["geometry"]["location"]["lat"];
+            partyLongitude = result["results"][0]["geometry"]["location"]["lng"];
 
-            var showLat = getResults["results"][0]["geometry"]["location"]["lat"];
-            var showLng = getResults["results"][0]["geometry"]["location"]["lng"];
-
-            partyLatitude = showLat;
-            partyLongitude = showLng;
 
             //call for uber/lyft estimates AFTER we get new coordinates for start AND end
             getPrices();
@@ -297,29 +296,16 @@
 
       //get prices for uber based off of text input
       function getUberPrices() {
-         console.log("Getting time estimate...");
 
-         //call for function to get new coordinate for start and end
-         //getStartCoordinates(document.getElementById('origin-input').value);
-         //getEndCoordinates(document.getElementById('destination-input').value);
-
-         console.log("Uber Start Lat: " + userLatitude);
-         console.log("Uber Stat Lng: " + userLongitude);
-         console.log("Uber End Lat: " + partyLatitude);
-         console.log("Uber End Lng: " + partyLongitude);
-
-
+         //url string builder with start coords, end coords and server token
          var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
-
-         var lyftUrl = 'https://api.lyft.com/v1/cost?start_latitude=' + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
 
          $.getJSON(url, function(result) {
             console.log(result);
 
-            //print uber prices to textbox
+            //print uber prices to textbox. i know that it returns size of 2. 
+            //its probably better to use a big textbox to represent instead of multiple small boxes
             for (i = 0; i < result["prices"].length; i++) {
-               console.log(result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"]);
-
                if (i == 0) {
                   document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
                } else if (i == 1) {
@@ -336,12 +322,11 @@
          var clientId = '4T6LiXnr2Jfk';
          var clientSecret = '8GY2GiXmuu9vGm3YGlRCiff8KUIzr83Q';
 
+
          var lyftToken;
 
-
-         //call for function to get new coordinate for start and end
-         //getStartCoordinates(document.getElementById('origin-input').value);
-         //getEndCoordinates(document.getElementById('destination-input').value);
+         //lyftApi works by asking lyft for a server token by using client id/secret.
+         //then with the token that we are provided, we can use the GET functions
 
          //get authentication access token from lyft 
          $.ajax({
@@ -356,9 +341,11 @@
                xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":" + clientSecret));
             },
             success: function(response) {
-               //console.log(response);
 
+               //record token value
                lyftToken = response["access_token"];
+
+               //callback to allow proper timing when estimating prices in lyft
                executeLyftAjax(lyftToken, userLatitude, userLongitude, partyLatitude, partyLongitude);
 
             },
@@ -369,12 +356,6 @@
       }
 
       function executeLyftAjax(token, startLat, startLng, endLat, endLng) {
-
-         console.log("Lyft Start Lat: " + userLatitude);
-         console.log("Lyft Stat Lng: " + userLongitude);
-         console.log("Lyft End Lat: " + partyLatitude);
-         console.log("Lyft End Lng: " + partyLongitude);
-
          $.ajax({
             url: 'https://api.lyft.com/v1/cost',
             type: 'GET',
@@ -395,7 +376,6 @@
 
                //print lyft prices to the textbox
                for (i = 0; i < response["cost_estimates"].length; i++) {
-                  console.log(response["cost_estimates"][i]["display_name"] + ", $" + response["cost_estimates"][i]["estimated_cost_cents_min"] + "-$" + response["cost_estimates"][i]["estimated_cost_cents_max"]);
 
                   if (i == 0) {
                      document.getElementById('Lyft1').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
