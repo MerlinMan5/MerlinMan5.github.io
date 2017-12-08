@@ -212,26 +212,45 @@
          uberSecretClientId = "3GP-8OtisG8GSHIKbC49ogYkdEyKXe3zVl0afEXp";
 
       // static vars for estimates. Need to implement dyanamic geo coding from gmaps once uber api works with static
-      var userLatitude, userLongitude, partyLatitude = 30.618531,
-         partyLongitude = -96.3386877;
+      var userLatitude, userLongitude, partyLatitude,
+         partyLongitude;
 
+      //no longner need user position, we will get coordinates from text boxes
+      /*
       navigator.geolocation.watchPosition(function(position) {
          // Update latitude and longitude by asking user for their geo location
          userLatitude = position.coords.latitude;
          userLongitude = position.coords.longitude;
 
-      });
+      });*/
 
       //get estimates based off of static input
       //location of device is start, location of a&m is end
       function getEstimatesForUserLocation(latitude, longitude) {
+         console.log("Getting geo coordinates");
+
+         //call for function to get new coordinate for start and end
+         getStartCoordinates(document.getElementById('origin-input').value);
+         getEndCoordinates(document.getElementById('destination-input').value);
+
+         console.log(userLatitude);
+         console.log(userLongitude);
+         console.log(partyLatitude);
+         console.log(partyLongitude);
+
 
          console.log("Getting time estimate...");
 
+
          var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
-         var lyftUrl = 'https://api.lyft.com/v1/cost?start_latitude=' + userLatitude + "&start_longitude=" + userLongitude + "&end_latitude=" + partyLatitude + "&end_longitude=" + partyLongitude + "&server_token=" + uberServerToken;
+
          $.getJSON(url, function(result) {
             console.log(result);
+
+            //print out uber options
+            for (i = 0; i < result["prices"].length; i++) {
+               console.log(result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"]);
+            }
 
          });
 
@@ -239,15 +258,46 @@
 
 
       //returns coordinates from the text boxes
-      function getCoordinates(address) {
+      function getStartCoordinates(address) {
 
-         console.log("Getting geo coordinates");
+         console.log("Getting start geo coordinates");
          var urlAddress = address.split(' ').join('+');
 
          var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
          $.getJSON(url, function(result) {
             console.log(result);
+
+            var getResults = result;
+
+            var showLat = getResults["results"][0]["geometry"]["location"]["lat"];
+            var showLng = getResults["results"][0]["geometry"]["location"]["lng"];
+
+            userLatitude = showLat;
+            userLongitude = showLng;
+
+         });
+
+      }
+
+      //returns coordinates from the text boxes
+      function getEndCoordinates(address) {
+
+         console.log("Getting end geo coordinates");
+         var urlAddress = address.split(' ').join('+');
+
+         var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
+
+         $.getJSON(url, function(result) {
+            console.log(result);
+
+            var getResults = result;
+
+            var showLat = getResults["results"][0]["geometry"]["location"]["lat"];
+            var showLng = getResults["results"][0]["geometry"]["location"]["lng"];
+
+            partyLatitude = showLat;
+            partyLongitude = showLng;
 
          });
 
@@ -257,8 +307,6 @@
 
 
    <input id="UberCheck" type="button" value="UberCheck" onclick="getEstimatesForUserLocation(42.618531, -96.3386277);" />
-   <input id="GeoCode1" type="button" value="GeoCode1" onclick="getCoordinates(document.getElementById('origin-input').value);" />
-   <input id="GeoCode2" type="button" value="GeoCode2" onclick="getCoordinates(document.getElementById('destination-input').value);" />
 
 
 
