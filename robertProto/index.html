@@ -45,6 +45,8 @@
 
          <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
 
+
+
       </form>
       <br>
       <span style="margin-top:25px; margin-left:25px ; font-family:Roboto; color: #500000">Distance: </span>
@@ -52,7 +54,6 @@
       <span id="distance" style="font-family:Roboto; color: #500000"></span>
    </div>
    <!-- END OF LEFT PANEL CONTENT -->
-
 
    <!--BORDER FOR MAP -->
    <div class="borderedMap"></div>
@@ -193,6 +194,8 @@
       };
 
    </script>
+
+
    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30&libraries=places&callback=initMap">
 
 
@@ -203,7 +206,7 @@
 
    <script src="js/jquery-3.2.1.min.js"></script>
 
-
+   <input id="UberCheck" type="button" value="UberCheck" onclick="getEstimatesForUserLocation();" />
 
    <script>
       // Uber API Constants
@@ -226,7 +229,7 @@
 
       //get estimates based off of static input
       //location of device is start, location of a&m is end
-      function getEstimatesForUserLocation(latitude, longitude) {
+      function getEstimatesForUserLocation() {
          console.log("Getting geo coordinates");
 
          //call for function to get new coordinate for start and end
@@ -306,7 +309,7 @@
    </script>
 
 
-   <input id="UberCheck" type="button" value="UberCheck" onclick="getEstimatesForUserLocation(42.618531, -96.3386277);" />
+
 
 
 
