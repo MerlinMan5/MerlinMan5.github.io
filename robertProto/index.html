@@ -206,7 +206,10 @@
 
    <script src="js/jquery-3.2.1.min.js"></script>
 
-   <input id="UberCheck" type="button" value="UberCheck" onclick="getEstimatesForUserLocation();" />
+   <input id="UberCheck" type="button" value="UberCheck" onclick="getEstimatesForUserLocation();"><br>
+
+   <label for="">Uber1: </label><input type="textbox" name="Uber1"></input><br>
+   <label for="">Uber2: </label><input type="textbox" name="Uber2"></input><br>
 
    <script>
       // Uber API Constants
@@ -253,6 +256,12 @@
             //print out uber options
             for (i = 0; i < result["prices"].length; i++) {
                console.log(result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"]);
+
+               if (i == 0) {
+                  document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+               } else if (i == 1) {
+                  document.getElementById('Uber2').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+               }
             }
 
          });
