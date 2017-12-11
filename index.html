@@ -3,11 +3,11 @@
 
 <head>
 
-   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-   <meta charset="utf-8">
-   <!-- GMAIL CLIENT KEY: 462218843122-16riskqb5201tfaeh51nrjqo3bec7h1c.apps.googleusercontent.com -->
-   <!-- link to main stylesheet -->
-   <link rel="stylesheet" type="text/css" href="main.css">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <!-- GMAIL CLIENT KEY: 462218843122-16riskqb5201tfaeh51nrjqo3bec7h1c.apps.googleusercontent.com -->
+    <!-- link to main stylesheet -->
+    <link rel="stylesheet" type="text/css" href="main.css">
 
 
 
@@ -15,383 +15,396 @@
 
 
 <body>
-   <!-- Navigation Bar -->
-   <div class="navbar">
-      <a href="#home">Home</a>
-      <a href="SignIn.html">Sign In</a>
-      <a href="#register">Register</a>
-   </div>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="#home">Home</a>
+        <a href="SignIn.html">Sign In</a>
+        <a href="#register">Register</a>
+    </div>
 
-   <!-- LEFT PANEL -->
-   <div id="destInt" style="position: absolute">
-      <p id="destTxt">
-         Enter your Trip</p>
-   </div>
+    <!-- LEFT PANEL -->
+    <div id="destInt" style="position: absolute">
+        <p id="destTxt">
+            Enter your Trip</p>
+    </div>
 
-   <div id="forms" style="position:absolute; top:20; left:0; height:50%; width: 50%">
-      <form>
-         <div id="mode-selector" class="controls">
-            <input type="radio" name="type" id="changemode-walking" checked="checked">
-            <label for="changemode-walking">Walking</label>
+    <div id="forms" style="position:absolute; top:20; left:0; height:50%; width: 50%">
+        <form>
+            <div id="mode-selector" class="controls">
+                <input type="radio" name="type" id="changemode-walking" checked="checked">
+                <label for="changemode-walking">Walking</label>
 
-            <input type="radio" name="type" id="changemode-transit">
-            <label for="changemode-transit">Transit</label>
+                <input type="radio" name="type" id="changemode-transit">
+                <label for="changemode-transit">Transit</label>
 
-            <input type="radio" name="type" id="changemode-driving">
-            <label for="changemode-driving">Driving</label>
-         </div>
+                <input type="radio" name="type" id="changemode-driving">
+                <label for="changemode-driving">Driving</label>
+            </div>
 
-         <input id="origin-input" class="controls" type="text" placeholder="Enter an origin location"><br>
+            <input id="origin-input" class="controls" type="text" placeholder="Enter an origin location"><br>
 
-         <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
-
-
-
-      </form>
-      <br>
-      <span style="margin-top:25px; margin-left:25px ; font-family:Roboto; color: #500000">Distance: </span>
-
-      <span id="distance" style="font-family:Roboto; color: #500000"></span>
-   </div>
-   <!-- END OF LEFT PANEL CONTENT -->
-
-   <!--BORDER FOR MAP -->
-   <div class="borderedMap"></div>
-
-
-   <!-- Map -->
-   <div id="map" style="position:absolute; top:63px; right:2px; height: 330px;  width: 48.25%; margin-right: 12px"></div>
-
-   <!-- LEFT PANEL BORDER & BOTTOM PANEL -->
-   <div class="bordered"></div>
-   <div class="resultBorder"></div>
-
-
-   <!--MAP SCRIPT (INITIALIZES MAP AND PERFORMS FUNCTIONS) -->
-   <script>
-      function initMap() {
-         var map = new google.maps.Map(document.getElementById('map'), {
-            center: {
-               lat: 30.615,
-               lng: -96.342
-            },
-            zoom: 13
-         });
-
-         new AutocompleteDirectionsHandler(map);
-      }
-
-      /**
-       * @constructor
-       */
+            <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
 
 
 
-      function AutocompleteDirectionsHandler(map) {
-         this.map = map;
-         this.originPlaceId = null;
-         this.destinationPlaceId = null;
-         this.travelMode = 'WALKING';
-         var originInput = document.getElementById('origin-input');
-         var destinationInput = document.getElementById('destination-input');
-         var modeSelector = document.getElementById('mode-selector');
-         this.directionsService = new google.maps.DirectionsService();
-         this.directionsDisplay = new google.maps.DirectionsRenderer();
-         this.directionsDisplay.setMap(map);
+        </form>
+        <br>
+        <span style="margin-top:25px; margin-left:25px ; font-family:Roboto; color: #500000">Distance: </span>
 
-         var originAutocomplete = new google.maps.places.Autocomplete(originInput, {
-            placeIdOnly: true
-         });
-         var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, {
-            placeIdOnly: true
-         });
+        <span id="distance" style="font-family:Roboto; color: #500000"></span>
+    </div>
+    <!-- END OF LEFT PANEL CONTENT -->
 
-         this.setupClickListener('changemode-walking', 'WALKING');
-         this.setupClickListener('changemode-transit', 'TRANSIT');
-         this.setupClickListener('changemode-driving', 'DRIVING');
-
-         this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
-         this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
-
-         this.map.push(originInput);
-         this.map.push(destinationInput);
-         this.map.push(modeSelector);
-
-         var geocoder = new google.maps.geocoder;
-         var service = new google.maps.DistanceMatrixService;
+    <!--BORDER FOR MAP -->
+    <div class="borderedMap"></div>
 
 
-      }
+    <!-- Map -->
+    <div id="map" style="position:absolute; top:63px; right:2px; height: 330px;  width: 48.25%; margin-right: 12px"></div>
+
+    <!-- LEFT PANEL BORDER & BOTTOM PANEL -->
+    <div class="bordered"></div>
+    <div class="resultBorder"></div>
 
 
-      AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) {
+    <!--MAP SCRIPT (INITIALIZES MAP AND PERFORMS FUNCTIONS) -->
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: 30.615,
+                    lng: -96.342
+                },
+                zoom: 13
+            });
 
-         var radioButton = document.getElementById(id);
-         var me = this;
+            new AutocompleteDirectionsHandler(map);
+        }
 
-         radioButton.addEventListener('click', function() {
-            me.travelMode = mode;
-            me.route();
-         });
-      };
+        /**
+         * @constructor
+         */
 
-      AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
 
-         var me = this;
-         autocomplete.addListener('place_changed', function() {
-            var place = autocomplete.getPlace();
 
-            if (!place.place_id) {
-               window.alert("Please select an option from the dropdown list.");
-               return;
+        function AutocompleteDirectionsHandler(map) {
+            this.map = map;
+            this.originPlaceId = null;
+            this.destinationPlaceId = null;
+            this.travelMode = 'WALKING';
+            var originInput = document.getElementById('origin-input');
+            var destinationInput = document.getElementById('destination-input');
+            var modeSelector = document.getElementById('mode-selector');
+            this.directionsService = new google.maps.DirectionsService();
+            this.directionsDisplay = new google.maps.DirectionsRenderer();
+            this.directionsDisplay.setMap(map);
+
+            var originAutocomplete = new google.maps.places.Autocomplete(originInput, {
+                placeIdOnly: true
+            });
+            var destinationAutocomplete = new google.maps.places.Autocomplete(destinationInput, {
+                placeIdOnly: true
+            });
+
+            this.setupClickListener('changemode-walking', 'WALKING');
+            this.setupClickListener('changemode-transit', 'TRANSIT');
+            this.setupClickListener('changemode-driving', 'DRIVING');
+
+            this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
+            this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
+
+            this.map.push(originInput);
+            this.map.push(destinationInput);
+            this.map.push(modeSelector);
+
+            var geocoder = new google.maps.geocoder;
+            var service = new google.maps.DistanceMatrixService;
+
+
+        }
+
+
+        AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) {
+
+            var radioButton = document.getElementById(id);
+            var me = this;
+
+            radioButton.addEventListener('click', function() {
+                me.travelMode = mode;
+                me.route();
+            });
+        };
+
+        AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
+
+            var me = this;
+            autocomplete.addListener('place_changed', function() {
+                var place = autocomplete.getPlace();
+
+                if (!place.place_id) {
+                    window.alert("Please select an option from the dropdown list.");
+                    return;
+                }
+
+                if (mode === 'ORIG') {
+                    me.originPlaceId = place.place_id;
+                } else {
+                    me.destinationPlaceId = place.place_id;
+                }
+
+                me.route();
+
+            });
+
+        };
+
+
+
+        AutocompleteDirectionsHandler.prototype.route = function() {
+
+            if (!this.originPlaceId || !this.destinationPlaceId) {
+                return;
             }
 
-            if (mode === 'ORIG') {
-               me.originPlaceId = place.place_id;
-            } else {
-               me.destinationPlaceId = place.place_id;
-            }
+            var me = this;
 
-            me.route();
+            this.directionsService.route({
+                origin: {
+                    'placeId': this.originPlaceId
+                },
+                destination: {
+                    'placeId': this.destinationPlaceId
+                },
+                travelMode: this.travelMode
+            }, function(response, status) {
 
-         });
+                if (status === 'OK') {
+                    me.directionsDisplay.setDirections(response);
+                    document.getElementById("distance").innerHTML = "";
+                    var distance = 0;
+                    for (i = 0; i < response.routes[0].legs.length; i++) {
+                        document.getElementById('distance').innerHTML += parseFloat((response.routes[0].legs[i].distance.value * 0.000621371192).toFixed(2)) + " miles";
+                    }
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
 
-      };
 
+        };
 
+    </script>
 
-      AutocompleteDirectionsHandler.prototype.route = function() {
 
-         if (!this.originPlaceId || !this.destinationPlaceId) {
-            return;
-         }
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30&libraries=places&callback=initMap">
 
-         var me = this;
 
-         this.directionsService.route({
-            origin: {
-               'placeId': this.originPlaceId
-            },
-            destination: {
-               'placeId': this.destinationPlaceId
-            },
-            travelMode: this.travelMode
-         }, function(response, status) {
+    </script>
+    <!-- End of Map Script -->
 
-            if (status === 'OK') {
-               me.directionsDisplay.setDirections(response);
-               document.getElementById("distance").innerHTML = "";
-               var distance = 0;
-               for (i = 0; i < response.routes[0].legs.length; i++) {
-                  document.getElementById('distance').innerHTML += parseFloat((response.routes[0].legs[i].distance.value * 0.000621371192).toFixed(2)) + " miles";
-               }
-            } else {
-               window.alert('Directions request failed due to ' + status);
-            }
-         });
+    <!-- Start of uber polling -->
 
+    <script src="jquery-3.2.1.min.js"></script>
 
-      };
+    <input id="Get Estimates" type="button" value="Get Estimates" onclick="getCoordsBeforePricing();" />
 
-   </script>
+    <br>
 
+    <label for="" id = "UberText1">Uber1: </label>
+    <input type="textbox" id="Uber1" name="Uber1"></input>
+    <br>
+    
+    <label for="" id = "UberText2">Uber2: </label>
+    <input type="textbox" id="Uber2" name="Uber2"></input>
+    <br>
 
-   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30&libraries=places&callback=initMap">
+    <label for="" id = "LyftText1">Lyft1: </label>
+    <input type="textbox" id="Lyft1" name="Lyft1"></input>
+    <br>
 
+    <label for="" id ="LyftText2">Lyft2: </label>
+    <input type="textbox" id="Lyft2" name="Lyft2"></input>
+    <br>
 
-   </script>
-   <!-- End of Map Script -->
+    <script>
+        // Uber API Constants
+        var uberClientId = "CE9VR9YEShlkoCZj3cIDaKVPd7ZZqTzB",
+            uberServerToken = "UNXTVx3vRMjS6BwE-K_OQFsBKPNMoewN1shnewaW",
+            uberSecretClientId = "3GP-8OtisG8GSHIKbC49ogYkdEyKXe3zVl0afEXp";
 
-   <!-- Start of uber polling -->
+        // static vars for estimates. Need to implement dyanamic geo coding from gmaps once uber api works with static
+        var userLatitude, userLongitude, partyLatitude,
+            partyLongitude;
 
-   <script src="js/jquery-3.2.1.min.js"></script>
+        //use callbacks to allow proper ordering of functions.
+        function getCoordsBeforePricing() {
 
-   <input id="Get Estimates" type="button" value="Get Estimates" onclick="getCoordsBeforePricing();" />
+            //set start coords and end coords
+            //we call get end coordinates in start coordinates
+            //we call getPrices() in get end coordinates
+            getStartCoordinates(document.getElementById('origin-input').value);
 
-   <br> <label for="">Uber1: </label><input type="textbox" id="Uber1" name="Uber1"></input><br>
-   <label for="">Uber2: </label><input type="textbox" id="Uber2" name="Uber2"></input><br>
-   <label for="">Lyft1: </label><input type="textbox" id="Lyft1" name="Lyft1"></input><br>
-   <label for="">Lyft2: </label><input type="textbox" id="Lyft2" name="Lyft2"></input><br>
 
-   <script>
-      // Uber API Constants
-      var uberClientId = "CE9VR9YEShlkoCZj3cIDaKVPd7ZZqTzB",
-         uberServerToken = "UNXTVx3vRMjS6BwE-K_OQFsBKPNMoewN1shnewaW",
-         uberSecretClientId = "3GP-8OtisG8GSHIKbC49ogYkdEyKXe3zVl0afEXp";
+        }
 
-      // static vars for estimates. Need to implement dyanamic geo coding from gmaps once uber api works with static
-      var userLatitude, userLongitude, partyLatitude,
-         partyLongitude;
+        //create callback to allow for uber and lyft to get coords when called in getEndCoordinates()
+        function getPrices() {
+            getUberPrices();
+            getLyftPrices();
+        }
 
-      //use callbacks to allow proper ordering of functions.
-      function getCoordsBeforePricing() {
+        //returns coordinates from the text boxes
+        function getStartCoordinates(address) {
 
-         //set start coords and end coords
-         //we call get end coordinates in start coordinates
-         //we call getPrices() in get end coordinates
-         getStartCoordinates(document.getElementById('origin-input').value);
+            console.log("Getting start geo coordinates");
 
+            //replace spaces with '+'. needed for url builder below
+            var urlAddress = address.split(' ').join('+');
 
-      }
+            //build url from api site, address, and key
+            var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
-      //create callback to allow for uber and lyft to get coords when called in getEndCoordinates()
-      function getPrices() {
-         getUberPrices();
-         getLyftPrices();
-      }
+            $.getJSON(url, function(result) {
 
-      //returns coordinates from the text boxes
-      function getStartCoordinates(address) {
+                //grab lat/longitude
+                userLatitude = result["results"][0]["geometry"]["location"]["lat"];
+                userLongitude = result["results"][0]["geometry"]["location"]["lng"];
 
-         console.log("Getting start geo coordinates");
 
-         //replace spaces with '+'. needed for url builder below
-         var urlAddress = address.split(' ').join('+');
+                //call for end coordinates so we can keep order
+                getEndCoordinates(document.getElementById('destination-input').value);
 
-         //build url from api site, address, and key
-         var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
-         $.getJSON(url, function(result) {
+            });
 
-            //grab lat/longitude
-            userLatitude = result["results"][0]["geometry"]["location"]["lat"];
-            userLongitude = result["results"][0]["geometry"]["location"]["lng"];
+        }
 
+        //returns coordinates from the text boxes
+        function getEndCoordinates(address) {
 
-            //call for end coordinates so we can keep order
-            getEndCoordinates(document.getElementById('destination-input').value);
 
+            console.log("Getting end geo coordinates");
 
-         });
+            //replace spaces with '+' in address
+            var urlAddress = address.split(' ').join('+');
 
-      }
+            //set url for getJSON
+            var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
 
-      //returns coordinates from the text boxes
-      function getEndCoordinates(address) {
+            $.getJSON(url, function(result) {
 
+                //grab lat/lont for end destination
+                partyLatitude = result["results"][0]["geometry"]["location"]["lat"];
+                partyLongitude = result["results"][0]["geometry"]["location"]["lng"];
 
-         console.log("Getting end geo coordinates");
 
-         //replace spaces with '+' in address
-         var urlAddress = address.split(' ').join('+');
+                //call for uber/lyft estimates AFTER we get new coordinates for start AND end
+                getPrices();
 
-         //set url for getJSON
-         var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + urlAddress + "&key=AIzaSyCc2dKB9xhg43MON3Oi9suBtODgXNPYQ30";
+            });
 
-         $.getJSON(url, function(result) {
+        }
 
-            //grab lat/lont for end destination
-            partyLatitude = result["results"][0]["geometry"]["location"]["lat"];
-            partyLongitude = result["results"][0]["geometry"]["location"]["lng"];
 
 
-            //call for uber/lyft estimates AFTER we get new coordinates for start AND end
-            getPrices();
+        //get prices for uber based off of text input
+        function getUberPrices() {
 
-         });
+            //url string builder with start coords, end coords and server token
+            var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
 
-      }
+            $.getJSON(url, function(result) {
+                console.log(result);
 
+                //print uber prices to textbox. i know that it returns size of 2. 
+                //its probably better to use a big textbox to represent instead of multiple small boxes
+                for (i = 0; i < result["prices"].length; i++) {
+                    if (i == 0) {
+                        document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+                    } else if (i == 1) {
+                        document.getElementById('Uber2').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+                    }
+                }
 
+            });
+        }
 
-      //get prices for uber based off of text input
-      function getUberPrices() {
+        function getLyftPrices() {
 
-         //url string builder with start coords, end coords and server token
-         var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
+            //client info from temp lyft API
+            var clientId = '4T6LiXnr2Jfk';
+            var clientSecret = '8GY2GiXmuu9vGm3YGlRCiff8KUIzr83Q';
 
-         $.getJSON(url, function(result) {
-            console.log(result);
 
-            //print uber prices to textbox. i know that it returns size of 2. 
-            //its probably better to use a big textbox to represent instead of multiple small boxes
-            for (i = 0; i < result["prices"].length; i++) {
-               if (i == 0) {
-                  document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
-               } else if (i == 1) {
-                  document.getElementById('Uber2').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
-               }
-            }
+            var lyftToken;
 
-         });
-      }
+            //lyftApi works by asking lyft for a server token by using client id/secret.
+            //then with the token that we are provided, we can use the GET functions
 
-      function getLyftPrices() {
+            //get authentication access token from lyft 
+            $.ajax({
+                url: 'https://api.lyft.com/oauth/token',
+                type: 'POST',
+                data: {
+                    grant_type: 'client_credentials',
+                    scope: 'public'
+                },
 
-         //client info from temp lyft API
-         var clientId = '4T6LiXnr2Jfk';
-         var clientSecret = '8GY2GiXmuu9vGm3YGlRCiff8KUIzr83Q';
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":" + clientSecret));
+                },
+                success: function(response) {
 
+                    //record token value
+                    lyftToken = response["access_token"];
 
-         var lyftToken;
+                    //callback to allow proper timing when estimating prices in lyft
+                    executeLyftAjax(lyftToken, userLatitude, userLongitude, partyLatitude, partyLongitude);
 
-         //lyftApi works by asking lyft for a server token by using client id/secret.
-         //then with the token that we are provided, we can use the GET functions
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
 
-         //get authentication access token from lyft 
-         $.ajax({
-            url: 'https://api.lyft.com/oauth/token',
-            type: 'POST',
-            data: {
-               grant_type: 'client_credentials',
-               scope: 'public'
-            },
+        function executeLyftAjax(token, startLat, startLng, endLat, endLng) {
+            $.ajax({
+                url: 'https://api.lyft.com/v1/cost',
+                type: 'GET',
 
-            beforeSend: function(xhr) {
-               xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":" + clientSecret));
-            },
-            success: function(response) {
+                data: {
+                    start_lat: startLat,
+                    start_lng: startLng,
+                    end_lat: endLat,
+                    end_lng: endLng
+                },
 
-               //record token value
-               lyftToken = response["access_token"];
+                beforeSend: function(xhr) {
+                    console.log(token)
+                    xhr.setRequestHeader("Authorization", "Bearer " + String(token));
+                },
+                success: function(response) {
+                    console.log(response);
 
-               //callback to allow proper timing when estimating prices in lyft
-               executeLyftAjax(lyftToken, userLatitude, userLongitude, partyLatitude, partyLongitude);
+                    //print lyft prices to the textbox
+                    for (i = 0; i < response["cost_estimates"].length; i++) {
 
-            },
-            error: function(error) {
-               console.log(error);
-            }
-         });
-      }
+                        if (i == 0) {
+                            document.getElementById('Lyft1').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
+                        } else if (i == 1) {
+                            document.getElementById('Lyft2').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
+                        }
+                    }
 
-      function executeLyftAjax(token, startLat, startLng, endLat, endLng) {
-         $.ajax({
-            url: 'https://api.lyft.com/v1/cost',
-            type: 'GET',
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
 
-            data: {
-               start_lat: startLat,
-               start_lng: startLng,
-               end_lat: endLat,
-               end_lng: endLng
-            },
-
-            beforeSend: function(xhr) {
-               console.log(token)
-               xhr.setRequestHeader("Authorization", "Bearer " + String(token));
-            },
-            success: function(response) {
-               console.log(response);
-
-               //print lyft prices to the textbox
-               for (i = 0; i < response["cost_estimates"].length; i++) {
-
-                  if (i == 0) {
-                     document.getElementById('Lyft1').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
-                  } else if (i == 1) {
-                     document.getElementById('Lyft2').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
-                  }
-               }
-
-            },
-            error: function(error) {
-               console.log(error);
-            }
-         });
-      }
-
-   </script>
+    </script>
 
 
 
