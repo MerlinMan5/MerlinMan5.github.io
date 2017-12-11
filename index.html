@@ -45,6 +45,13 @@
 
             <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
 
+            
+            
+            
+ 
+            
+            
+            
 
 
         </form>
@@ -204,8 +211,19 @@
 
     <!-- Start of uber polling -->
 
-    <script src="query-3.2.1.min.js"></script>
+    <script src="query-3.2.1.min.js">
+    
+                 document.getElementById("destination-input")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        document.getElementById("Get Estimates").click();
+    }
+});
+        
+    </script>
 
+      
     <input id="Get Estimates" type="button" value="Get Estimates" onclick="getCoordsBeforePricing();" />
 
     <br>
