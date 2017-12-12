@@ -19,7 +19,7 @@
     <div class="navbar">
         <a href="#home">Home</a>
         <a href="SignIn.html">Sign In</a>
-        <p id="Title"> R I D E   D O N T   D R I V E - Team 51 </p>
+        <p id="Title"> R I D E  D O N T  D R I V E - Team 51 </p>
     </div>
 
     <!-- LEFT PANEL -->
@@ -327,7 +327,7 @@
 
 
         function getUberETA() {
-            var uberTime = "https://api.uber.com/v1/estimates/time?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
+            var uberTime = "https://sandbox-api.uber.com/v1/estimates/time?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
 
 
             $.getJSON(uberTime, function(result) {
@@ -351,7 +351,7 @@
         function getUberPrices(timeEstimateX, timeEstimateXL) {
 
             //url string builder with start coords, end coords and server token
-            var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
+            var url = "https://sandbox-api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
 
 
 
@@ -394,7 +394,7 @@
                 },
 
                 beforeSend: function(xhr) {
-                    xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":" + clientSecret));
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":SANDBOX-" + clientSecret));
                 },
                 success: function(response) {
 
