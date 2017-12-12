@@ -355,6 +355,42 @@ ul.posts li {
     vertical-align: middle;
 }
 
+
+
+
+#Get_Estimates
+{
+    position: absolute;
+    left: 30px;
+    top: 685px;
+    
+    
+    background: #fffff0;
+    font-family: Arial;
+    color: #000000;
+    font-size: 15px;
+    padding: 10px 20px 10px 20px;
+}
+
+
+
+#Title
+{
+    position: absolute;
+    left: 500px;
+    top: -10px;
+    
+    
+    font-family: Roboto;
+    font-size: 1.2em;
+    color: #FFFFFF;
+    
+    padding-left: 6px;
+    vertical-align: middle;
+    
+}
+
+
 #LyftText2
 {
     position: absolute;
