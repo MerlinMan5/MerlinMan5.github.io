@@ -45,13 +45,13 @@
 
             <input id="destination-input" class="controls" type="text" placeholder="Enter a destination">
 
-            
-            
-            
- 
-            
-            
-            
+
+
+
+
+
+
+
 
 
         </form>
@@ -212,35 +212,34 @@
     <!-- Start of uber polling -->
 
     <script src="query-3.2.1.min.js">
-    
-                 document.getElementById("destination-input")
-    .addEventListener("keyup", function(event) {
-    event.preventDefault();
-    if (event.keyCode === 13) {
-        document.getElementById("Get Estimates").click();
-    }
-});
-        
+        document.getElementById("destination-input")
+            .addEventListener("keyup", function(event) {
+                event.preventDefault();
+                if (event.keyCode === 13) {
+                    document.getElementById("Get Estimates").click();
+                }
+            });
+
     </script>
 
-      
+
     <input id="Get Estimates" type="button" value="Get Estimates" onclick="getCoordsBeforePricing();" />
 
     <br>
 
-    <label for="" id = "UberText1">Uber1: </label>
+    <label for="" id="UberText1">Uber1: </label>
     <input type="textbox" id="Uber1" name="Uber1">
     <br>
-    
-    <label for="" id = "UberText2">Uber2: </label>
+
+    <label for="" id="UberText2">Uber2: </label>
     <input type="textbox" id="Uber2" name="Uber2">
     <br>
 
-    <label for="" id = "LyftText1">Lyft1: </label>
+    <label for="" id="LyftText1">Lyft1: </label>
     <input type="textbox" id="Lyft1" name="Lyft1">
     <br>
 
-    <label for="" id ="LyftText2">Lyft2: </label>
+    <label for="" id="LyftText2">Lyft2: </label>
     <input type="textbox" id="Lyft2" name="Lyft2">
     <br>
 
@@ -267,8 +266,10 @@
 
         //create callback to allow for uber and lyft to get coords when called in getEndCoordinates()
         function getPrices() {
-            getUberPrices();
+            getUberETA();
             getLyftPrices();
+
+            console.log(localStorage.getItem("email"));
         }
 
         //returns coordinates from the text boxes
@@ -325,11 +326,34 @@
 
 
 
+        function getUberETA() {
+            var uberTime = "https://api.uber.com/v1/estimates/time?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
+
+
+            $.getJSON(uberTime, function(result) {
+                console.log(result);
+
+                var timeEstimateX;
+                var timeEstimateXL;
+                timeEstimateX = result["times"][0]["estimate"] / 60;
+                timeEstimateXL = result["times"][1]["estimate"] / 60;
+
+                getUberPrices(timeEstimateX, timeEstimateXL);
+            });
+
+
+
+        }
+
+
+
         //get prices for uber based off of text input
-        function getUberPrices() {
+        function getUberPrices(timeEstimateX, timeEstimateXL) {
 
             //url string builder with start coords, end coords and server token
             var url = "https://api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
+
+
 
             $.getJSON(url, function(result) {
                 console.log(result);
@@ -338,9 +362,9 @@
                 //its probably better to use a big textbox to represent instead of multiple small boxes
                 for (i = 0; i < result["prices"].length; i++) {
                     if (i == 0) {
-                        document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+                        document.getElementById('Uber1').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"] + ", ETA: " + timeEstimateX + " MIN";
                     } else if (i == 1) {
-                        document.getElementById('Uber2').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"];
+                        document.getElementById('Uber2').value = result["prices"][i]["display_name"] + ", $" + result["prices"][i]["low_estimate"] + "-$" + result["prices"][i]["high_estimate"] + ", ETA: " + timeEstimateXL + " MIN";
                     }
                 }
 
@@ -358,6 +382,7 @@
 
             //lyftApi works by asking lyft for a server token by using client id/secret.
             //then with the token that we are provided, we can use the GET functions
+
 
             //get authentication access token from lyft 
             $.ajax({
@@ -377,7 +402,43 @@
                     lyftToken = response["access_token"];
 
                     //callback to allow proper timing when estimating prices in lyft
-                    executeLyftAjax(lyftToken, userLatitude, userLongitude, partyLatitude, partyLongitude);
+                    //executeLyftAjax(lyftToken, userLatitude, userLongitude, partyLatitude, partyLongitude);
+                    findETALyft(lyftToken, userLatitude, userLongitude);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        var etaURL = "https://api.lyft.com/v1/eta";
+
+
+        function findETALyft(token, startLat, startLng) {
+            $.ajax({
+                url: 'https://api.lyft.com/v1/eta',
+                type: 'GET',
+
+                data: {
+                    lat: startLat,
+                    lng: startLng
+                },
+
+                beforeSend: function(xhr) {
+                    console.log(token)
+                    xhr.setRequestHeader("Authorization", "Bearer " + String(token));
+                },
+                success: function(response) {
+                    console.log(response);
+
+                    var LyftETA;
+                    var LyftPlusETA;
+                    LyftETA = response["eta_estimates"][1]["eta_seconds"];
+                    LyftPlusETA = response["eta_estimates"][0]["eta_seconds"];
+
+
+                    //callback to allow proper timing when estimating prices in lyft
+                    executeLyftAjax(token, userLatitude, userLongitude, partyLatitude, partyLongitude, LyftETA, LyftPlusETA);
 
                 },
                 error: function(error) {
@@ -386,7 +447,9 @@
             });
         }
 
-        function executeLyftAjax(token, startLat, startLng, endLat, endLng) {
+
+
+        function executeLyftAjax(token, startLat, startLng, endLat, endLng, LyftETA, LyftPlusETA) {
             $.ajax({
                 url: 'https://api.lyft.com/v1/cost',
                 type: 'GET',
@@ -409,9 +472,9 @@
                     for (i = 0; i < response["cost_estimates"].length; i++) {
 
                         if (i == 0) {
-                            document.getElementById('Lyft1').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
+                            document.getElementById('Lyft1').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100 + ", ETA: " + LyftETA / 60 + " MIN");
                         } else if (i == 1) {
-                            document.getElementById('Lyft2').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100);
+                            document.getElementById('Lyft2').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100 + ", ETA: " + LyftPlusETA / 60 + " MIN");
                         }
                     }
 
