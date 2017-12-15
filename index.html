@@ -224,10 +224,10 @@
 
 
     <input id="Get_Estimates" type="button" value="Get Estimates" onclick="getCoordsBeforePricing();" />
-    <input id="UberX_Request" type="button" value="Request UberX PickUp" onclick="requestUber();" />
-    <input id="Lyft_Request" type="button" value="Request Lyft PickUp" onclick="requestLyft();" />
-    <input id="UberXL_Request" type="button" value="Request UberXL PickUp" onclick="requestUberXL();" />
-    <input id="LyftPlus_Request" type="button" value="Request LyftPlus PickUp" onclick="requestLyftPlus();" />
+    <input id="UberX_Request" style="visibility:hidden" type="button" value="Request UberX PickUp" onclick="requestUber();" />
+    <input id="Lyft_Request" style="visibility:hidden" type="button" value="Request Lyft PickUp" onclick="requestLyft();" />
+    <input id="UberXL_Request" style="visibility:hidden" type="button" value="Request UberXL PickUp" onclick="requestUberXL();" />
+    <input id="LyftPlus_Request" style="visibility:hidden" type="button" value="Request LyftPlus PickUp" onclick="requestLyftPlus();" />
     <br>
 
     <label for="" id="UberText1">Uber1: </label>
@@ -272,6 +272,12 @@
 
         //use callbacks to allow proper ordering of functions.
         function getCoordsBeforePricing() {
+
+            //show buttons for request
+            document.getElementById("UberX_Request").style.visibility = "visible";
+            document.getElementById("UberXL_Request").style.visibility = "visible";
+            document.getElementById("Lyft_Request").style.visibility = "visible";
+            document.getElementById("LyftPlus_Request").style.visibility = "visible";
 
             //set start coords and end coords
             //we call get end coordinates in start coordinates
