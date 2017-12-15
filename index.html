@@ -224,7 +224,10 @@
 
 
     <input id="Get_Estimates" type="button" value="Get Estimates" onclick="getCoordsBeforePricing();" />
-
+    <input id="UberX_Request" type="button" value="Request UberX" onclick="requestUber();" />
+    <input id="Lyft_Request" type="button" value="Request Lyft" onclick="requestLyft();" />
+    <input id="UberXL_Request" type="button" value="Request UberXL" onclick="requestUberXL();" />
+    <input id="LyftPlus_Request" type="button" value="Request LyftPlus" onclick="requestLyftPlus();" />
     <br>
 
     <label for="" id="UberText1">Uber1: </label>
@@ -246,12 +249,26 @@
     <script>
         // Uber API Constants
         var uberClientId = "CE9VR9YEShlkoCZj3cIDaKVPd7ZZqTzB",
-            uberServerToken = "UNXTVx3vRMjS6BwE-K_OQFsBKPNMoewN1shnewaW",
+            uberServerToken = "-oyc1NvcotVIEAZomDtrYptQGLoIiBoMruhunKMR",
             uberSecretClientId = "3GP-8OtisG8GSHIKbC49ogYkdEyKXe3zVl0afEXp";
+
+        var uberTestAccess = "KA.eyJ2ZXJzaW9uIjoyLCJpZCI6ImI3Y292SXhQU0JxYklIaUZEMzF2T3c9PSIsImV4cGlyZXNfYXQiOjE1MTU4OTAyNjQsInBpcGVsaW5lX2tleV9pZCI6Ik1RPT0iLCJwaXBlbGluZV9pZCI6MX0.jqas5MbzobKT6tbbd4Ndaz85_dyvnzgVWiYgNOWmFSs";
+
+        var lyftToken;
 
         // static vars for estimates. Need to implement dyanamic geo coding from gmaps once uber api works with static
         var userLatitude, userLongitude, partyLatitude,
             partyLongitude;
+
+
+        //client info from temp lyft API
+        var clientId = '4T6LiXnr2Jfk';
+        var clientSecret = '8GY2GiXmuu9vGm3YGlRCiff8KUIzr83Q';
+
+        var uberXFareID, uberXLFareID;
+
+        var etaURL = "https://api.lyft.com/v1/eta";
+
 
         //use callbacks to allow proper ordering of functions.
         function getCoordsBeforePricing() {
@@ -264,6 +281,7 @@
 
         }
 
+
         //create callback to allow for uber and lyft to get coords when called in getEndCoordinates()
         function getPrices() {
             getUberETA();
@@ -271,6 +289,7 @@
 
             console.log(localStorage.getItem("email"));
         }
+
 
         //returns coordinates from the text boxes
         function getStartCoordinates(address) {
@@ -298,10 +317,9 @@
 
         }
 
+
         //returns coordinates from the text boxes
         function getEndCoordinates(address) {
-
-
             console.log("Getting end geo coordinates");
 
             //replace spaces with '+' in address
@@ -325,7 +343,6 @@
         }
 
 
-
         function getUberETA() {
             var uberTime = "https://sandbox-api.uber.com/v1/estimates/time?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
 
@@ -339,6 +356,7 @@
                 timeEstimateXL = result["times"][1]["estimate"] / 60;
 
                 getUberPrices(timeEstimateX, timeEstimateXL);
+                getUberFare();
             });
 
 
@@ -346,10 +364,8 @@
         }
 
 
-
         //get prices for uber based off of text input
         function getUberPrices(timeEstimateX, timeEstimateXL) {
-
             //url string builder with start coords, end coords and server token
             var url = "https://sandbox-api.uber.com/v1/estimates/price?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
 
@@ -371,18 +387,51 @@
             });
         }
 
+
+        function getUberFare() {
+            //url string builder with start coords, end coords and server token
+            var url = "https://sandbox-api.uber.com/v1/requests/estimate?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken;
+
+            /*
+            $.getJSON(url, function(result) {
+                console.log(result);
+
+
+            });*/
+
+
+            $.ajax({
+                url: 'https://sandbox-api.uber.com/v1/requests/estimate',
+                type: 'POST',
+
+                data: {
+
+                    "start_latitude": userLatitude,
+                    "start_longitude": userLongitude,
+
+
+                    "end_latitude": partyLatitude,
+                    "end_longitude": partyLongitude,
+                    "server_token": uberServerToken
+                },
+
+                success: function(response) {
+                    console.log(response);
+
+
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+
+        }
+
+
         function getLyftPrices() {
-
-            //client info from temp lyft API
-            var clientId = '4T6LiXnr2Jfk';
-            var clientSecret = '8GY2GiXmuu9vGm3YGlRCiff8KUIzr83Q';
-
-
-            var lyftToken;
-
             //lyftApi works by asking lyft for a server token by using client id/secret.
             //then with the token that we are provided, we can use the GET functions
-
 
             //get authentication access token from lyft 
             $.ajax({
@@ -396,8 +445,9 @@
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":SANDBOX-" + clientSecret));
                 },
-                success: function(response) {
 
+                success: function(response) {
+                    console.log(response);
                     //record token value
                     lyftToken = response["access_token"];
 
@@ -410,8 +460,6 @@
                 }
             });
         }
-
-        var etaURL = "https://api.lyft.com/v1/eta";
 
 
         function findETALyft(token, startLat, startLng) {
@@ -448,7 +496,6 @@
         }
 
 
-
         function executeLyftAjax(token, startLat, startLng, endLat, endLng, LyftETA, LyftPlusETA) {
             $.ajax({
                 url: 'https://api.lyft.com/v1/cost',
@@ -471,12 +518,175 @@
                     //print lyft prices to the textbox
                     for (i = 0; i < response["cost_estimates"].length; i++) {
 
-                        if (i == 0) {
+                        if (response["cost_estimates"][i]["ride_type"] == "lyft") {
                             document.getElementById('Lyft1').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100 + ", ETA: " + LyftETA / 60 + " MIN");
-                        } else if (i == 1) {
+                        } else if (response["cost_estimates"][i]["ride_type"] == "lyft_plus") {
                             document.getElementById('Lyft2').value = response["cost_estimates"][i]["display_name"] + ", $" + (response["cost_estimates"][i]["estimated_cost_cents_min"] / 100) + "-$" + (response["cost_estimates"][i]["estimated_cost_cents_max"] / 100 + ", ETA: " + LyftPlusETA / 60 + " MIN");
                         }
                     }
+
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+
+
+        function requestLyft() {
+
+
+            //get authentication access token from lyft 
+            $.ajax({
+                url: 'https://api.lyft.com/oauth/token',
+                type: 'POST',
+                data: {
+                    grant_type: 'client_credentials',
+                    scope: 'public'
+                },
+
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(clientId + ":SANDBOX-" + clientSecret));
+                },
+
+                success: function(response) {
+                    console.log(response);
+                    //record token value
+                    lyftToken = response["access_token"];
+
+                    getLyftRide(lyftToken);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+        }
+
+
+        function getLyftRide(token) {
+            $.ajax({
+                url: 'https://api.lyft.com/v1/rides',
+                type: 'POST',
+
+                data: {
+                    origin: {
+                        "lat": userLatitude,
+                        "lng": userLongitude
+                    },
+                    destination: {
+                        "lat": partyLatitude,
+                        "lng": partyLongitude
+                    },
+                    ride_type: "lyft"
+                },
+
+                beforeSend: function(xhr) {
+                    console.log(token)
+                    xhr.setRequestHeader("Authorization", "Bearer " + String(token));
+                },
+                success: function(response) {
+                    console.log(response);
+
+
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+
+
+        function requestUber() {
+            //url string builder with start coords, end coords and server token
+            var url = "https://sandbox-api.uber.com/v1/requests?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken + "&fare_id=uberX";
+
+
+            $.ajax({
+                url: 'https://sandbox-api.uber.com/v1/requests',
+                type: 'POST',
+
+                data: {
+
+                    "start_latitude": userLatitude,
+                    "start_longitude": userLongitude,
+
+
+                    "end_latitude": partyLatitude,
+                    "end_longitude": partyLongitude,
+                    "server_token": uberServerToken,
+                    "fare_id": "uberX"
+                },
+
+                success: function(response) {
+                    console.log(response);
+
+
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+
+        }
+
+
+        function requestUberXL() {
+            //url string builder with start coords, end coords and server token
+            var url = "https://sandbox-api.uber.com/v1/requests?start_latitude=" + String(userLatitude) + "&start_longitude=" + String(userLongitude) + "&end_latitude=" + String(partyLatitude) + "&end_longitude=" + String(partyLongitude) + "&server_token=" + uberServerToken + "&fare_id=uberXL";
+
+            $.ajax({
+                url: 'https://sandbox-api.uber.com/v1/requests',
+                type: 'POST',
+
+                data: {
+
+                    "start_latitude": userLatitude,
+                    "start_longitude": userLongitude,
+
+
+                    "end_latitude": partyLatitude,
+                    "end_longitude": partyLongitude,
+                    "server_token": uberServerToken,
+                    "fare_id": "uberXL"
+                },
+
+                success: function(response) {
+                    console.log(response);
+
+
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+
+
+        function requestLyftPlus() {
+            $.ajax({
+                url: 'https://api.lyft.com/v1/rides',
+                type: 'POST',
+
+                data: {
+                    origin: {
+                        "lat": userLatitude,
+                        "lng": userLongitude
+                    },
+                    destination: {
+                        "lat": partyLatitude,
+                        "lng": partyLongitude
+                    },
+                    ride_type: "lyft_plus"
+                },
+
+                beforeSend: function(xhr) {
+                    console.log(lyftToken)
+                    xhr.setRequestHeader("Authorization", "Bearer " + String(lyftToken));
+                },
+                success: function(response) {
+                    console.log(response);
+
 
                 },
                 error: function(error) {

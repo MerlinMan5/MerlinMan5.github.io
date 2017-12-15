@@ -137,8 +137,7 @@ ul.posts li {
 
 /* Style for Google Maps controls */
 
-.controls
-{
+.controls {
     margin-top: 20px;
     border: 1px solid transparent;
     border-radius: 2px 0 0 2px;
@@ -188,12 +187,12 @@ ul.posts li {
 #Uber1,
 #Uber2,
 #Lyft1,
-#Lyft2{
-    
+#Lyft2 {
+
     position: absolute;
     left: 100px;
     top: 150px;
-    
+
     margin-top: 10px;
     border: 1px solid transparent;
     border-radius: 2px 0 0 2px;
@@ -202,7 +201,7 @@ ul.posts li {
     height: 32px;
     outline: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-     background-color: #fff;
+    background-color: #fff;
     font-family: Roboto;
     font-size: 15px;
     font-weight: 300;
@@ -212,12 +211,12 @@ ul.posts li {
     width: 90%;
 }
 
-#Uber1{
-    
+#Uber1 {
+
     position: absolute;
     left: 20px;
     top: 450px;
-    
+
     margin-top: 10px;
     border: 1px solid transparent;
     border-radius: 2px 0 0 2px;
@@ -226,7 +225,7 @@ ul.posts li {
     height: 32px;
     outline: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-     background-color: #fff;
+    background-color: #fff;
     font-family: Roboto;
     font-size: 15px;
     font-weight: 300;
@@ -236,13 +235,12 @@ ul.posts li {
     width: 40%;
 }
 
-#Uber2
-{
-    
+#Uber2 {
+
     position: absolute;
     left: 20px;
     top: 510px;
-    
+
     margin-top: 10px;
     border: 1px solid transparent;
     border-radius: 2px 0 0 2px;
@@ -251,7 +249,7 @@ ul.posts li {
     height: 32px;
     outline: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-     background-color: #fff;
+    background-color: #fff;
     font-family: Roboto;
     font-size: 15px;
     font-weight: 300;
@@ -261,12 +259,12 @@ ul.posts li {
     width: 40%;
 }
 
-#Lyft1{
-    
+#Lyft1 {
+
     position: absolute;
     left: 20px;
     top: 570px;
-    
+
     margin-top: 10px;
     border: 1px solid transparent;
     border-radius: 2px 0 0 2px;
@@ -275,7 +273,7 @@ ul.posts li {
     height: 32px;
     outline: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-     background-color: #fff;
+    background-color: #fff;
     font-family: Roboto;
     font-size: 15px;
     font-weight: 300;
@@ -285,12 +283,12 @@ ul.posts li {
     width: 40%;
 }
 
-#Lyft2{
-    
+#Lyft2 {
+
     position: absolute;
     left: 20px;
     top: 630px;
-    
+
     margin-top: 10px;
     border: 1px solid transparent;
     border-radius: 2px 0 0 2px;
@@ -299,7 +297,7 @@ ul.posts li {
     height: 32px;
     outline: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-     background-color: #fff;
+    background-color: #fff;
     font-family: Roboto;
     font-size: 15px;
     font-weight: 300;
@@ -310,12 +308,11 @@ ul.posts li {
 }
 
 
-#UberText1
-{
+#UberText1 {
     position: absolute;
     left: 10px;
     top: 430px;
-    
+
     display: table-cell;
     font-family: Roboto;
     font-size: 1.2em;
@@ -325,12 +322,11 @@ ul.posts li {
     vertical-align: middle;
 }
 
-#UberText2
-{
+#UberText2 {
     position: absolute;
     left: 10px;
     top: 495px;
-    
+
     display: table-cell;
     font-family: Roboto;
     font-size: 1.2em;
@@ -340,12 +336,11 @@ ul.posts li {
     vertical-align: middle;
 }
 
-#LyftText1
-{
+#LyftText1 {
     position: absolute;
     left: 10px;
     top: 555px;
-    
+
     display: table-cell;
     font-family: Roboto;
     font-size: 1.2em;
@@ -358,13 +353,64 @@ ul.posts li {
 
 
 
-#Get_Estimates
-{
+#Get_Estimates {
     position: absolute;
     left: 30px;
     top: 685px;
-    
-    
+
+
+    background: #fffff0;
+    font-family: Arial;
+    color: #000000;
+    font-size: 15px;
+    padding: 10px 20px 10px 20px;
+}
+
+#UberX_Request {
+    position: absolute;
+    left: 650px;
+    top: 450px;
+
+
+    background: #fffff0;
+    font-family: Arial;
+    color: #000000;
+    font-size: 15px;
+    padding: 10px 20px 10px 20px;
+}
+
+#Lyft_Request {
+    position: absolute;
+    left: 650px;
+    top: 570px;
+
+
+    background: #fffff0;
+    font-family: Arial;
+    color: #000000;
+    font-size: 15px;
+    padding: 10px 20px 10px 20px;
+}
+
+#UberXL_Request {
+    position: absolute;
+    left: 650px;
+    top: 510px;
+
+
+    background: #fffff0;
+    font-family: Arial;
+    color: #000000;
+    font-size: 15px;
+    padding: 10px 20px 10px 20px;
+}
+
+#LyftPlus_Request {
+    position: absolute;
+    left: 650px;
+    top: 630px;
+
+
     background: #fffff0;
     font-family: Arial;
     color: #000000;
@@ -373,30 +419,27 @@ ul.posts li {
 }
 
 
-
-#Title
-{
+#Title {
     position: absolute;
     left: 500px;
     top: -10px;
-    
-    
+
+
     font-family: Roboto;
     font-size: 1.2em;
     color: #FFFFFF;
-    
+
     padding-left: 6px;
     vertical-align: middle;
-    
+
 }
 
 
-#LyftText2
-{
+#LyftText2 {
     position: absolute;
     left: 10px;
     top: 615px;
-    
+
     display: table-cell;
     font-family: Roboto;
     font-size: 1.2em;
